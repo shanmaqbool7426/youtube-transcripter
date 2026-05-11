@@ -275,12 +275,12 @@
     <div class="rs-item"><span class="rs-val" id="rLang">—</span><span class="rs-lbl">Language</span></div>
   </div>
 
-  <!-- Main Tabs: Timeline | Notes | Code | Export -->
+  <!-- Main Tabs: Timeline | Chapters | Notes | Code -->
   <div class="main-tab-bar">
-    <button class="mtab active" data-t="timeline" onclick="switchMTab(this,'rp-timeline')">Timeline</button>
-    <button class="mtab" data-t="chapters" onclick="switchMTab(this,'rp-notes')">Notes</button>
-    <button class="mtab" data-t="code" onclick="switchMTab(this,'rp-code')">Code</button>
-    <button class="mtab" data-t="export" onclick="switchMTab(this,'rp-export')">Export</button>
+    <button class="mtab active" data-t="timeline"  onclick="switchMTab(this,'rp-timeline')">Timeline</button>
+    <button class="mtab"        data-t="chapters"  onclick="switchMTab(this,'rp-chapters')">Chapters</button>
+    <button class="mtab"        data-t="notes"     onclick="switchMTab(this,'rp-notes')">Notes</button>
+    <button class="mtab"        data-t="code"      onclick="switchMTab(this,'rp-code')">Code</button>
   </div>
 
   <!-- Panel: Timeline -->
@@ -329,6 +329,35 @@
       <button class="jb-btn" id="jbBtn" onclick="jumpToVideo()">
         Jump to Video
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel: Chapters -->
+  <div id="rp-chapters" class="res-panel">
+    <div class="ch-header">
+      <p class="ch-desc">Auto-detected chapters based on topic shifts</p>
+      <div class="ch-count-badge"><span id="chCount">—</span> chapters</div>
+    </div>
+    <div class="ch-list" id="chaptersList"></div>
+
+    <!-- Expanded chapter detail (hidden by default) -->
+    <div id="chDetail" class="ch-detail" style="display:none">
+      <div class="ch-detail-header">
+        <button class="ch-back-btn" onclick="closeChapterDetail()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          All Chapters
+        </button>
+        <span class="ch-detail-num" id="chDetailNum"></span>
+      </div>
+      <div class="ch-detail-title-row">
+        <span class="ch-detail-ts" id="chDetailTs"></span>
+        <h3 class="ch-detail-title" id="chDetailTitle"></h3>
+      </div>
+      <div class="ch-detail-segs" id="chDetailSegs"></div>
+      <button class="ch-jump-btn" id="chJumpBtn" onclick="jumpToChapter()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Jump to Video
       </button>
     </div>
   </div>

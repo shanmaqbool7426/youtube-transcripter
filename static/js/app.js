@@ -217,6 +217,7 @@ function buildResults(data) {
 
     // Build sub-sections
     buildTimeline(segs);
+    buildChapters(segs);
     buildNotes(data, dur);
     buildCode(data);
     buildExport(data, dur);
@@ -284,6 +285,146 @@ function jumpToVideo() {
     const url = `https://www.youtube.com/watch?v=${videoId}&t=${t}s`;
     window.open(url, '_blank', 'noopener,noreferrer');
     showToast(`▶ Opening at ${fmt(selectedSeg.start)}`);
+}
+
+// ─── CHAPTERS ─────────────────────────────────────────
+let chaptersData  = [];   // array of chapter objects
+let activeChapter = null; // currently open chapter detail
+
+// Filler words to skip when generating titles
+const FILLER = new Set([
+    'and','the','a','an','is','are','was','were','to','of','in','on','at','for',
+    'with','this','that','we','you','i','it','be','so','by','or','but','have',
+    'has','had','will','would','can','could','do','does','did','not','just',
+    'also','if','as','from','what','how','when','where','which','they','their',
+    'then','than','now','here','there','these','those','been','being','our','my'
+]);
+
+function detectChapters(segs) {
+    if (!segs.length) return [];
+
+    // Target 6–10 chapters depending on transcript length
+    const targetN   = Math.min(10, Math.max(5, Math.round(Math.sqrt(segs.length))));
+    const chunkSize = Math.ceil(segs.length / targetN);
+    const chapters  = [];
+
+    for (let i = 0; i < segs.length; i += chunkSize) {
+        const group   = segs.slice(i, Math.min(i + chunkSize, segs.length));
+        const first   = group[0];
+        const sample  = group.slice(0, 4).map(s => s.text).join(' ');
+        const preview = group.slice(0, 3).map(s => s.text).join(' ');
+
+        chapters.push({
+            index:    chapters.length,
+            start:    first.start,
+            title:    extractChapterTitle(sample),
+            subtitle: extractSubtitle(preview),
+            preview:  preview.slice(0, 90) + (preview.length > 90 ? '…' : ''),
+            segCount: group.length,
+            segments: group,
+        });
+    }
+    return chapters;
+}
+
+function extractChapterTitle(text) {
+    const words = text.split(/\s+/).filter(w => {
+        const clean = w.toLowerCase().replace(/[^a-z]/g, '');
+        return clean.length > 2 && !FILLER.has(clean);
+    });
+    const title = words.slice(0, 4).join(' ').slice(0, 38);
+    return title.charAt(0).toUpperCase() + title.slice(1);
+}
+
+function extractSubtitle(text) {
+    const words = text.split(/\s+/).filter(w => w.length > 1);
+    return words.slice(0, 9).join(' ').slice(0, 50) + '…';
+}
+
+function buildChapters(segs) {
+    chaptersData  = detectChapters(segs);
+    activeChapter = null;
+
+    document.getElementById('chCount').textContent = chaptersData.length;
+
+    // Close any open detail
+    document.getElementById('chDetail').style.display = 'none';
+
+    const list = document.getElementById('chaptersList');
+    list.innerHTML = '';
+
+    chaptersData.forEach((ch, i) => {
+        const card = document.createElement('div');
+        card.className = 'ch-card';
+        card.style.animationDelay = `${i * 45}ms`;
+        card.dataset.idx = i;
+        card.innerHTML = `
+            <div class="ch-left">
+                <span class="ch-idx">Ch ${i + 1}</span>
+                <span class="ch-ts">${fmt(ch.start)}</span>
+            </div>
+            <div class="ch-body">
+                <p class="ch-title">${esc(ch.title)}</p>
+                <p class="ch-preview">${esc(ch.subtitle)}</p>
+                <p class="ch-seg-count">${ch.segCount} segments</p>
+            </div>
+            <svg class="ch-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        `;
+        card.addEventListener('click', () => openChapterDetail(ch, card));
+        list.appendChild(card);
+    });
+}
+
+function openChapterDetail(ch, card) {
+    // Mark card selected
+    document.querySelectorAll('.ch-card').forEach(c => c.classList.remove('ch-selected'));
+    card.classList.add('ch-selected');
+    activeChapter = ch;
+
+    // Populate detail header
+    document.getElementById('chDetailNum').textContent  = `Chapter ${ch.index + 1} of ${chaptersData.length}`;
+    document.getElementById('chDetailTs').textContent   = fmt(ch.start);
+    document.getElementById('chDetailTitle').textContent = ch.title;
+
+    // Populate detail segments
+    const segsEl = document.getElementById('chDetailSegs');
+    segsEl.innerHTML = '';
+    ch.segments.forEach((seg, i) => {
+        const d = document.createElement('div');
+        d.className = 'ch-seg-card';
+        d.style.animationDelay = `${Math.min(i * 20, 200)}ms`;
+        d.innerHTML = `
+            <span class="ch-seg-time">${fmt(seg.start)}</span>
+            <span class="ch-seg-text">${esc(seg.text)}</span>
+        `;
+        segsEl.appendChild(d);
+    });
+
+    // Show detail with slide-in animation
+    const detail = document.getElementById('chDetail');
+    detail.style.display = 'flex';
+    detail.style.animation = 'none';
+    detail.offsetHeight; // force reflow
+    detail.style.animation = '';
+}
+
+function closeChapterDetail() {
+    const detail = document.getElementById('chDetail');
+    detail.style.animation = 'slideInRight .3s var(--ease) reverse both';
+    setTimeout(() => {
+        detail.style.display = 'none';
+        detail.style.animation = '';
+        document.querySelectorAll('.ch-card').forEach(c => c.classList.remove('ch-selected'));
+        activeChapter = null;
+    }, 280);
+}
+
+function jumpToChapter() {
+    if (!currentData || !activeChapter) return;
+    const t   = Math.floor(activeChapter.start);
+    const url = `https://www.youtube.com/watch?v=${currentData.video_id}&t=${t}s`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+    showToast(`▶ Chapter ${activeChapter.index + 1} at ${fmt(activeChapter.start)}`);
 }
 
 // ─── TIMELINE SEARCH ──────────────────────────────────
