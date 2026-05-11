@@ -286,6 +286,23 @@
   <!-- Panel: Timeline -->
   <div id="rp-timeline" class="res-panel active">
     <div class="tl-list" id="tlList"></div>
+
+    <!-- Floating jump bar — shown when a segment is selected -->
+    <div id="jumpBar" class="jump-bar" style="display:none">
+      <div class="jb-left">
+        <div class="jb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="jb-info">
+          <span class="jb-label">Jump to timestamp</span>
+          <span class="jb-time" id="jbTime">00:00</span>
+        </div>
+      </div>
+      <button class="jb-btn" id="jbBtn" onclick="jumpToVideo()">
+        Jump to Video
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- Panel: Notes -->

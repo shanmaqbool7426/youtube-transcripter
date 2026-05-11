@@ -226,16 +226,64 @@ function buildResults(data) {
 }
 
 // ─── TIMELINE ─────────────────────────────────────────
+let selectedSeg = null; // { start, text }
+
 function buildTimeline(segs) {
     const list = document.getElementById('tlList');
     list.innerHTML = '';
+    selectedSeg = null;
+    document.getElementById('jumpBar').style.display = 'none';
+
     segs.forEach((seg, i) => {
         const d = document.createElement('div');
         d.className = 'tl-card';
-        d.style.animationDelay = `${Math.min(i*12, 280)}ms`;
-        d.innerHTML = `<span class="tl-num">#${p(i+1)}</span><span class="tl-time">${fmt(seg.start)}</span><span class="tl-text">${esc(seg.text)}</span>`;
+        d.dataset.start = seg.start;
+        d.style.animationDelay = `${Math.min(i * 12, 280)}ms`;
+        d.innerHTML = `
+            <span class="tl-num">#${p(i+1)}</span>
+            <span class="tl-time">${fmt(seg.start)}</span>
+            <span class="tl-text">${esc(seg.text)}</span>
+        `;
+        d.addEventListener('click', () => selectSegment(d, seg.start, seg.text));
         list.appendChild(d);
     });
+}
+
+function selectSegment(card, startSec, text) {
+    // Deselect previous
+    document.querySelectorAll('.tl-card.selected').forEach(c => c.classList.remove('selected'));
+
+    // Select this card
+    card.classList.add('selected');
+    selectedSeg = { start: startSec, text };
+
+    // Smooth-scroll the card to the vertical center of the list
+    const list = document.getElementById('tlList');
+    const cardTop    = card.offsetTop;
+    const cardHeight = card.offsetHeight;
+    const listHeight = list.clientHeight;
+    list.scrollTo({
+        top: cardTop - (listHeight / 2) + (cardHeight / 2),
+        behavior: 'smooth'
+    });
+
+    // Show jump bar with timestamp
+    const bar = document.getElementById('jumpBar');
+    document.getElementById('jbTime').textContent = fmt(startSec);
+    bar.style.display = 'flex';
+    // Re-trigger animation
+    bar.style.animation = 'none';
+    bar.offsetHeight; // force reflow
+    bar.style.animation = '';
+}
+
+function jumpToVideo() {
+    if (!currentData || selectedSeg === null) return;
+    const videoId = currentData.video_id;
+    const t = Math.floor(selectedSeg.start);
+    const url = `https://www.youtube.com/watch?v=${videoId}&t=${t}s`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+    showToast(`▶ Opening at ${fmt(selectedSeg.start)}`);
 }
 
 // ─── NOTES ────────────────────────────────────────────
