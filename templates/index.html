@@ -1,371 +1,638 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouLearn — Learn from any video</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>YouLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     1. SPLASH SCREEN
-════════════════════════════════════════════ -->
-<div id="splashScreen" class="splash-screen">
-    <div class="splash-bg-dots"></div>
-    <div class="splash-content">
-        <div class="splash-logo-ring">
-            <div class="splash-logo-inner">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
-                    <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/>
-                </svg>
-            </div>
-        </div>
-        <div class="splash-brand">
-            <span class="splash-brand-you">You</span><span class="splash-brand-learn">Learn</span>
-        </div>
-        <p class="splash-tagline">Learn from any video.<br>Implement faster.</p>
-        <button class="splash-btn" onclick="goToHome()">Get Started</button>
-        <button class="splash-skip" onclick="goToHome()">Skip</button>
+<div id="app">
+
+<!-- ════════════════════════════════════
+  SCREEN: SPLASH
+════════════════════════════════════ -->
+<div id="scr-splash" class="scr active no-nav">
+  <div class="splash-bg"></div>
+  <div class="splash-body">
+    <div class="splash-logo-ring">
+      <svg width="48" height="48" viewBox="0 0 24 24"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/></svg>
     </div>
+    <div class="splash-brand"><span class="by">You</span><span class="bl">Learn</span></div>
+    <p class="splash-tag">Learn from any video.<br>Implement faster.</p>
+    <div class="splash-dots">
+      <span class="sd active"></span><span class="sd"></span><span class="sd"></span>
+    </div>
+    <button class="red-pill-btn splash-cta" onclick="nav('scr-onboard')">Get Started</button>
+    <button class="ghost-btn" onclick="nav('scr-home')">Skip</button>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     2. MAIN APP SHELL
-════════════════════════════════════════════ -->
-<div id="appShell" class="app-shell" style="display:none">
+<!-- ════════════════════════════════════
+  SCREEN: ONBOARDING
+════════════════════════════════════ -->
+<div id="scr-onboard" class="scr no-nav">
+  <div class="onboard-wrap">
+    <div class="onboard-slides" id="onboardSlides">
 
-    <!-- TOP NAV -->
-    <header class="app-header">
-        <div class="app-header-inner">
-            <div class="app-brand">
-                <div class="app-brand-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/>
-                    </svg>
-                </div>
-                <span class="app-brand-text"><span class="brand-you">You</span><span class="brand-learn">Learn</span></span>
-            </div>
-            <div class="app-header-right">
-                <button class="header-icon-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                </button>
-            </div>
+      <!-- Slide 1 -->
+      <div class="onboard-slide">
+        <div class="onboard-art art-1">
+          <svg width="180" height="160" viewBox="0 0 180 160" fill="none">
+            <rect x="20" y="20" width="140" height="90" rx="12" fill="#FF0000" opacity="0.12"/>
+            <rect x="30" y="30" width="120" height="70" rx="8" fill="#FF0000" opacity="0.18"/>
+            <circle cx="90" cy="65" r="22" fill="#FF0000"/>
+            <path d="M84 57L100 65L84 73V57Z" fill="white"/>
+            <rect x="15" y="120" width="150" height="8" rx="4" fill="#F0F0F0"/>
+            <rect x="15" y="136" width="100" height="6" rx="3" fill="#F0F0F0"/>
+          </svg>
         </div>
-    </header>
+        <h2 class="onboard-h">Learn Smarter,<br><span class="red">Not Harder</span></h2>
+        <p class="onboard-p">We turn long tutorial videos into step-by-step guides, so you can implement faster and save hours.</p>
+      </div>
 
-    <!-- ── HOME SCREEN ──────────────────────── -->
-    <section id="homeScreen" class="screen screen-home">
-        <div class="home-greeting">
-            <h2 class="greeting-text">Hello <span class="greeting-wave">👋</span></h2>
-            <p class="greeting-sub">What do you want to learn today?</p>
+      <!-- Slide 2 -->
+      <div class="onboard-slide">
+        <div class="onboard-art art-2">
+          <svg width="180" height="160" viewBox="0 0 180 160" fill="none">
+            <rect x="25" y="10" width="130" height="100" rx="12" fill="#FFF5F5"/>
+            <rect x="35" y="22" width="80" height="10" rx="5" fill="#FF0000" opacity="0.3"/>
+            <rect x="35" y="38" width="110" height="6" rx="3" fill="#E0E0E0"/>
+            <rect x="35" y="50" width="90" height="6" rx="3" fill="#E0E0E0"/>
+            <rect x="35" y="62" width="100" height="6" rx="3" fill="#E0E0E0"/>
+            <rect x="35" y="74" width="70" height="6" rx="3" fill="#E0E0E0"/>
+            <circle cx="148" cy="30" r="18" fill="#FF0000"/>
+            <path d="M141 30l5 5 9-9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="25" y="118" width="130" height="30" rx="8" fill="#FF0000" opacity="0.1"/>
+            <rect x="40" y="128" width="100" height="10" rx="5" fill="#FF0000" opacity="0.2"/>
+          </svg>
         </div>
+        <h2 class="onboard-h">Smart <span class="red">Notes</span> &amp; Timeline</h2>
+        <p class="onboard-p">Auto-generate timestamped chapters, key concepts, implementation steps, and code snippets from any video.</p>
+      </div>
 
-        <!-- Search / URL Input -->
-        <div class="search-row">
-            <div class="search-box">
-                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input
-                    id="urlInput"
-                    type="text"
-                    class="search-input"
-                    placeholder="Paste YouTube URL here..."
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-            </div>
-            <button id="analyzeBtn" class="analyze-btn" onclick="fetchTranscript()">
-                <span id="analyzeBtnText">Analyze</span>
-                <span id="analyzeBtnSpinner" style="display:none">
-                    <svg class="btn-spin" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="80 60"/></svg>
-                </span>
-            </button>
+      <!-- Slide 3 -->
+      <div class="onboard-slide">
+        <div class="onboard-art art-3">
+          <svg width="180" height="160" viewBox="0 0 180 160" fill="none">
+            <rect x="15" y="10" width="150" height="30" rx="8" fill="#F5F5F5"/>
+            <rect x="25" y="20" width="80" height="10" rx="5" fill="#DDD"/>
+            <rect x="140" y="17" width="18" height="16" rx="4" fill="#FF0000"/>
+            <path d="M144 25h10M149 20v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="15" y="48" width="70" height="52" rx="8" fill="#FFF5F5"/>
+            <rect x="25" y="58" width="50" height="6" rx="3" fill="#FF0000" opacity="0.4"/>
+            <rect x="25" y="70" width="45" height="4" rx="2" fill="#EEE"/>
+            <rect x="25" y="80" width="40" height="4" rx="2" fill="#EEE"/>
+            <rect x="25" y="90" width="48" height="4" rx="2" fill="#EEE"/>
+            <rect x="95" y="48" width="70" height="52" rx="8" fill="#F5FFF8"/>
+            <rect x="105" y="58" width="50" height="6" rx="3" fill="#22C55E" opacity="0.5"/>
+            <rect x="105" y="70" width="45" height="4" rx="2" fill="#EEE"/>
+            <rect x="105" y="80" width="35" height="4" rx="2" fill="#EEE"/>
+            <rect x="105" y="90" width="50" height="4" rx="2" fill="#EEE"/>
+            <rect x="40" y="112" width="100" height="36" rx="10" fill="#FF0000"/>
+            <rect x="60" y="124" width="60" height="12" rx="6" fill="white" opacity="0.3"/>
+          </svg>
         </div>
+        <h2 class="onboard-h">Export &amp; <span class="red">Share</span></h2>
+        <p class="onboard-p">Download your learning notes as PDF or plain text. Share insights and implement projects faster.</p>
+      </div>
 
-        <!-- Error -->
-        <div id="errorBox" class="error-row" style="display:none">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span id="errorMsg"></span>
+    </div>
+
+    <!-- Dots + Buttons -->
+    <div class="onboard-footer">
+      <div class="ob-dots">
+        <span class="od active" onclick="goSlide(0)"></span>
+        <span class="od" onclick="goSlide(1)"></span>
+        <span class="od" onclick="goSlide(2)"></span>
+      </div>
+      <button class="red-pill-btn" id="obNextBtn" onclick="obNext()">Next</button>
+      <button class="ghost-btn" onclick="nav('scr-home')">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+  SCREEN: HOME DASHBOARD
+════════════════════════════════════ -->
+<div id="scr-home" class="scr has-nav">
+  <div class="app-bar">
+    <div class="app-brand"><span class="by">You</span><span class="bl">Learn</span></div>
+    <button class="icon-circle" onclick="nav('scr-profile')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </button>
+  </div>
+
+  <div class="scr-scroll">
+    <div class="home-greeting">
+      <h2>Hello <span>👋</span></h2>
+      <p>What do you want to learn today?</p>
+    </div>
+
+    <!-- URL Input -->
+    <div class="url-card">
+      <div class="url-row">
+        <div class="url-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="urlInput" type="url" inputmode="url" placeholder="Paste YouTube URL here..." autocomplete="off" spellcheck="false"/>
         </div>
-
-        <!-- Quick Access Tabs -->
-        <div class="quick-tabs">
-            <div class="quick-tab">
-                <div class="quick-tab-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                </div>
-                <span>History</span>
-            </div>
-            <div class="quick-tab">
-                <div class="quick-tab-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <span>Saved</span>
-            </div>
-            <div class="quick-tab">
-                <div class="quick-tab-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M9 21V9l3 3 3-3v12"/></svg>
-                </div>
-                <span>Bookmarks</span>
-            </div>
-            <div class="quick-tab">
-                <div class="quick-tab-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </div>
-                <span>Downloads</span>
-            </div>
-        </div>
-
-        <!-- Continue Learning -->
-        <div class="section-block">
-            <div class="section-header">
-                <h3 class="section-title">Continue Learning</h3>
-                <button class="see-all-btn">See all</button>
-            </div>
-            <div class="continue-card">
-                <div class="continue-thumb">
-                    <div class="continue-thumb-bg">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white" opacity="0.8"/></svg>
-                    </div>
-                </div>
-                <div class="continue-info">
-                    <p class="continue-title">React Native Full Course</p>
-                    <p class="continue-source">Traversy Media</p>
-                    <div class="progress-bar-wrap">
-                        <div class="progress-bar-track">
-                            <div class="progress-bar-fill" style="width: 48%"></div>
-                        </div>
-                        <span class="progress-pct">48%</span>
-                    </div>
-                </div>
-                <div class="continue-play">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FF0000"/><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Analyses -->
-        <div class="section-block">
-            <div class="section-header">
-                <h3 class="section-title">Recent Analyses</h3>
-                <button class="see-all-btn">See all</button>
-            </div>
-            <div class="video-list">
-                <div class="video-item">
-                    <div class="video-thumb thumb-blue">
-                        <span class="thumb-label">PY</span>
-                    </div>
-                    <div class="video-meta">
-                        <p class="video-title">Python Django Full Course</p>
-                        <p class="video-date">6/22/15 • CodeWithHarry</p>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                </div>
-                <div class="video-item">
-                    <div class="video-thumb thumb-purple">
-                        <span class="thumb-label">UX</span>
-                    </div>
-                    <div class="video-meta">
-                        <p class="video-title">UI/UX Design Masterclass</p>
-                        <p class="video-date">8/15/40 • DesignCourse</p>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── PROCESSING SCREEN ─────────────────── -->
-    <section id="processingScreen" class="screen screen-processing" style="display:none">
-        <div class="proc-wrap">
-            <h2 class="proc-title">Processing Video</h2>
-            <p class="proc-subtitle">This may take a few minutes</p>
-
-            <div class="proc-ring-outer">
-                <svg class="proc-svg" viewBox="0 0 160 160">
-                    <circle class="proc-track" cx="80" cy="80" r="68" fill="none" stroke-width="10"/>
-                    <circle class="proc-progress" cx="80" cy="80" r="68" fill="none" stroke-width="10"
-                        stroke-dasharray="427" stroke-dashoffset="427"
-                        stroke-linecap="round" transform="rotate(-90 80 80)"/>
-                </svg>
-                <div class="proc-pct-wrap">
-                    <span class="proc-pct" id="procPct">0%</span>
-                </div>
-            </div>
-
-            <div class="proc-checklist">
-                <div class="proc-check-item" id="pci1">
-                    <div class="pci-icon pending"></div>
-                    <span class="pci-label">Downloading Video</span>
-                    <div class="pci-check">✓</div>
-                </div>
-                <div class="proc-check-item" id="pci2">
-                    <div class="pci-icon pending"></div>
-                    <span class="pci-label">Extracting Audio</span>
-                    <div class="pci-check">✓</div>
-                </div>
-                <div class="proc-check-item" id="pci3">
-                    <div class="pci-icon pending"></div>
-                    <span class="pci-label">Extracting Frames</span>
-                    <div class="pci-check">✓</div>
-                </div>
-                <div class="proc-check-item" id="pci4">
-                    <div class="pci-icon pending"></div>
-                    <span class="pci-label">Transcribing Audio</span>
-                    <div class="pci-check">✓</div>
-                </div>
-                <div class="proc-check-item" id="pci5">
-                    <div class="pci-icon pending"></div>
-                    <span class="pci-label">Reading Screen (OCR)</span>
-                    <div class="pci-check">✓</div>
-                </div>
-                <div class="proc-check-item" id="pci6">
-                    <div class="pci-icon pending"></div>
-                    <span class="pci-label">AI Analysis in Progress</span>
-                    <div class="pci-check">✓</div>
-                </div>
-            </div>
-
-            <div class="proc-notice">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FF0000" opacity="0.15"/><path d="M12 8v4m0 4h.01" stroke="#FF0000" stroke-width="2" stroke-linecap="round"/></svg>
-                <span>You will get a notification when analysis is complete.</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── RESULTS SCREEN ───────────────────── -->
-    <section id="resultsScreen" class="screen screen-results" style="display:none">
-
-        <!-- Video Header -->
-        <div class="result-video-header">
-            <div class="result-video-thumb">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/></svg>
-            </div>
-            <div class="result-video-info">
-                <p class="result-video-title" id="resultVideoTitle">Video Transcript</p>
-                <div class="result-video-stats">
-                    <span id="statWords">—</span> words &nbsp;·&nbsp;
-                    <span id="statSegments">—</span> segments &nbsp;·&nbsp;
-                    <span id="statDuration">—</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Tab Bar -->
-        <div class="main-tabs">
-            <button class="main-tab active" data-tab="timeline" onclick="switchMainTab('timeline')">Timeline</button>
-            <button class="main-tab" data-tab="chapters" onclick="switchMainTab('chapters')">Chapters</button>
-        </div>
-
-        <!-- Timeline Panel -->
-        <div id="panel-timeline" class="panel active">
-            <div class="timeline-scroll" id="timelineList"></div>
-        </div>
-
-        <!-- Chapters / Notes Panel -->
-        <div id="panel-chapters" class="panel">
-            <!-- Sub tabs -->
-            <div class="sub-tabs">
-                <button class="sub-tab active" data-stab="notes" onclick="switchSubTab('notes')">Notes</button>
-                <button class="sub-tab" data-stab="steps" onclick="switchSubTab('steps')">Steps</button>
-                <button class="sub-tab" data-stab="concepts" onclick="switchSubTab('concepts')">Concepts</button>
-                <button class="sub-tab" data-stab="tools" onclick="switchSubTab('tools')">Tools</button>
-            </div>
-
-            <div id="stab-notes" class="stab-panel active">
-                <!-- Course Summary -->
-                <div class="notes-section">
-                    <h4 class="notes-h4">Course Summary</h4>
-                    <p class="notes-body" id="notesSummary"></p>
-                </div>
-                <!-- Key Concepts -->
-                <div class="notes-section">
-                    <h4 class="notes-h4">Key Concepts</h4>
-                    <ul class="notes-bullets" id="notesConceptsList"></ul>
-                </div>
-                <!-- What You'll Build -->
-                <div class="notes-section">
-                    <h4 class="notes-h4">What You'll Build</h4>
-                    <p class="notes-body" id="notesWhatBuild"></p>
-                </div>
-                <!-- Actions -->
-                <div class="notes-actions">
-                    <button class="notes-action-btn" onclick="copyText()">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        Save
-                    </button>
-                    <button class="notes-action-btn notes-action-red" onclick="downloadText()">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Export PDF
-                    </button>
-                </div>
-            </div>
-
-            <div id="stab-steps" class="stab-panel">
-                <div class="notes-section">
-                    <h4 class="notes-h4">Implementation Steps</h4>
-                    <div class="steps-list" id="stepsList"></div>
-                </div>
-            </div>
-
-            <div id="stab-concepts" class="stab-panel">
-                <div class="notes-section">
-                    <h4 class="notes-h4">Key Concepts</h4>
-                    <ul class="notes-bullets" id="conceptsFullList"></ul>
-                </div>
-            </div>
-
-            <div id="stab-tools" class="stab-panel">
-                <div class="notes-section">
-                    <h4 class="notes-h4">Full Transcript</h4>
-                    <p class="fulltext-body" id="fullText"></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Actions -->
-        <div class="result-bottom-bar">
-            <button class="result-back-btn" onclick="resetApp()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
-                New Analysis
-            </button>
-            <button class="result-jump-btn" onclick="downloadText()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .txt
-            </button>
-        </div>
-    </section>
-
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav">
-        <button class="bnav-item active" onclick="showHome()">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span>Home</span>
+        <button id="analyzeBtn" class="analyze-btn" onclick="fetchTranscript()">
+          <span id="aText">Analyze</span>
+          <svg id="aSpinner" class="btn-spin" viewBox="0 0 50 50" style="display:none"><circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="80 60"/></svg>
         </button>
-        <button class="bnav-item" onclick="showHome()">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Search</span>
-        </button>
-        <button class="bnav-item bnav-add" onclick="showHome()">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <button class="bnav-item" onclick="showHome()">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            <span>Library</span>
-        </button>
-        <button class="bnav-item" onclick="showHome()">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Profile</span>
-        </button>
-    </nav>
+      </div>
+      <div id="homeError" class="inline-error" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="homeErrorMsg"></span>
+      </div>
+    </div>
 
-</div><!-- /appShell -->
+    <!-- Quick Tabs -->
+    <div class="quick-row">
+      <div class="quick-item" onclick="nav('scr-library')">
+        <div class="quick-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <span>History</span>
+      </div>
+      <div class="quick-item" onclick="nav('scr-library')">
+        <div class="quick-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+        <span>Saved</span>
+      </div>
+      <div class="quick-item" onclick="nav('scr-library')">
+        <div class="quick-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="9" y1="9" x2="15" y2="9"/></svg></div>
+        <span>Bookmarks</span>
+      </div>
+      <div class="quick-item" onclick="nav('scr-library')">
+        <div class="quick-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+        <span>Downloads</span>
+      </div>
+    </div>
 
-<!-- TOAST -->
+    <!-- Continue Learning -->
+    <div class="home-section">
+      <div class="sec-head"><span class="sec-title">Continue Learning</span><button class="see-all" onclick="nav('scr-library')">See all</button></div>
+      <div class="continue-card" onclick="nav('scr-library')">
+        <div class="vid-thumb dark-thumb"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white" opacity="0.8"/></svg></div>
+        <div class="cc-info">
+          <p class="cc-title">React Native Full Course</p>
+          <p class="cc-sub">Traversy Media</p>
+          <div class="prog-row">
+            <div class="prog-track"><div class="prog-fill" style="width:48%"></div></div>
+            <span class="prog-pct">48%</span>
+          </div>
+        </div>
+        <div class="cc-play"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#FF0000"/><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Recent Analyses -->
+    <div class="home-section">
+      <div class="sec-head"><span class="sec-title">Recent Analyses</span><button class="see-all" onclick="nav('scr-library')">See all</button></div>
+      <div class="card-list">
+        <div class="vid-row" onclick="nav('scr-library')">
+          <div class="vid-thumb t-blue"><span>PY</span></div>
+          <div class="vid-meta"><p class="vt">Python Django Full Course</p><p class="vs">6/22/15 · CodeWithHarry</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="vid-row" onclick="nav('scr-library')">
+          <div class="vid-thumb t-purple"><span>UX</span></div>
+          <div class="vid-meta"><p class="vt">UI/UX Design Masterclass</p><p class="vs">8/15/40 · DesignCourse</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="vid-row" onclick="nav('scr-library')">
+          <div class="vid-thumb t-green"><span>JS</span></div>
+          <div class="vid-meta"><p class="vt">JavaScript Full Course</p><p class="vs">7/30/50 · freeCodeCamp</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+  </div><!-- /scr-scroll -->
+</div>
+
+<!-- ════════════════════════════════════
+  SCREEN: PROCESSING
+════════════════════════════════════ -->
+<div id="scr-processing" class="scr no-nav">
+  <div class="proc-appbar">
+    <div class="app-brand"><span class="by">You</span><span class="bl">Learn</span></div>
+  </div>
+  <div class="proc-body">
+    <h2 class="proc-h">Processing Video</h2>
+    <p class="proc-sub">This may take a few minutes</p>
+
+    <div class="ring-wrap">
+      <svg class="ring-svg" viewBox="0 0 180 180">
+        <circle class="ring-track" cx="90" cy="90" r="76" fill="none" stroke-width="10"/>
+        <circle class="ring-bar" cx="90" cy="90" r="76" fill="none" stroke-width="10"
+          stroke-dasharray="477" stroke-dashoffset="477"
+          stroke-linecap="round" transform="rotate(-90 90 90)"/>
+      </svg>
+      <div class="ring-center">
+        <span class="ring-pct" id="procPct">0%</span>
+        <span class="ring-label">complete</span>
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" id="ci0"><div class="ci-ball"></div><span>Downloading Video</span><span class="ci-tick">✓</span></div>
+      <div class="check-item" id="ci1"><div class="ci-ball"></div><span>Extracting Audio</span><span class="ci-tick">✓</span></div>
+      <div class="check-item" id="ci2"><div class="ci-ball"></div><span>Extracting Frames</span><span class="ci-tick">✓</span></div>
+      <div class="check-item" id="ci3"><div class="ci-ball"></div><span>Transcribing Audio</span><span class="ci-tick">✓</span></div>
+      <div class="check-item" id="ci4"><div class="ci-ball"></div><span>Reading Screen (OCR)</span><span class="ci-tick">✓</span></div>
+      <div class="check-item" id="ci5"><div class="ci-ball"></div><span>AI Analysis in Progress</span><span class="ci-tick">✓</span></div>
+    </div>
+
+    <div class="proc-notice">
+      <div class="pn-dot"></div>
+      <p>You will get a notification when analysis is complete.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+  SCREEN: RESULTS  (Timeline + Notes + Code + Export)
+════════════════════════════════════ -->
+<div id="scr-results" class="scr no-nav">
+  <div class="res-appbar">
+    <button class="back-btn" onclick="navBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <p class="res-title" id="resTitle">Transcript</p>
+    <button class="icon-circle" onclick="downloadText()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="res-stats">
+    <div class="rs-item"><span class="rs-val" id="rWords">—</span><span class="rs-lbl">Words</span></div>
+    <div class="rs-sep"></div>
+    <div class="rs-item"><span class="rs-val" id="rSegs">—</span><span class="rs-lbl">Segments</span></div>
+    <div class="rs-sep"></div>
+    <div class="rs-item"><span class="rs-val" id="rDur">—</span><span class="rs-lbl">Duration</span></div>
+    <div class="rs-sep"></div>
+    <div class="rs-item"><span class="rs-val" id="rLang">—</span><span class="rs-lbl">Language</span></div>
+  </div>
+
+  <!-- Main Tabs: Timeline | Notes | Code | Export -->
+  <div class="main-tab-bar">
+    <button class="mtab active" data-t="timeline" onclick="switchMTab(this,'rp-timeline')">Timeline</button>
+    <button class="mtab" data-t="chapters" onclick="switchMTab(this,'rp-notes')">Notes</button>
+    <button class="mtab" data-t="code" onclick="switchMTab(this,'rp-code')">Code</button>
+    <button class="mtab" data-t="export" onclick="switchMTab(this,'rp-export')">Export</button>
+  </div>
+
+  <!-- Panel: Timeline -->
+  <div id="rp-timeline" class="res-panel active">
+    <div class="tl-list" id="tlList"></div>
+  </div>
+
+  <!-- Panel: Notes -->
+  <div id="rp-notes" class="res-panel">
+    <div class="sub-tab-bar">
+      <button class="stab active" onclick="switchSTab(this,'sp-summary')">Notes</button>
+      <button class="stab" onclick="switchSTab(this,'sp-steps')">Steps</button>
+      <button class="stab" onclick="switchSTab(this,'sp-concepts')">Concepts</button>
+      <button class="stab" onclick="switchSTab(this,'sp-tools')">Tools</button>
+    </div>
+
+    <div id="sp-summary" class="sp active">
+      <div class="note-block">
+        <h4 class="nb-title">Course Summary</h4>
+        <p class="nb-body" id="noteSummary"></p>
+      </div>
+      <div class="note-block">
+        <h4 class="nb-title">Key Concepts</h4>
+        <ul class="bullet-list" id="noteKC"></ul>
+      </div>
+      <div class="note-block">
+        <h4 class="nb-title">What You'll Build</h4>
+        <p class="nb-body" id="noteWYB"></p>
+      </div>
+      <div class="note-actions">
+        <button class="na-btn" onclick="copyText()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Save
+        </button>
+        <button class="na-btn na-red" onclick="downloadText()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export PDF
+        </button>
+      </div>
+    </div>
+
+    <div id="sp-steps" class="sp">
+      <div class="note-block">
+        <h4 class="nb-title">Implementation Steps</h4>
+        <div id="noteSteps"></div>
+      </div>
+    </div>
+
+    <div id="sp-concepts" class="sp">
+      <div class="note-block">
+        <h4 class="nb-title">All Concepts</h4>
+        <ul class="bullet-list" id="noteConcepts"></ul>
+      </div>
+    </div>
+
+    <div id="sp-tools" class="sp">
+      <div class="note-block">
+        <h4 class="nb-title">Full Transcript</h4>
+        <p class="fulltext" id="fullText"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel: Code -->
+  <div id="rp-code" class="res-panel">
+    <div class="sub-tab-bar">
+      <button class="stab active" onclick="switchSTab(this,'sc-code')">Code</button>
+      <button class="stab" onclick="switchSTab(this,'sc-commands')">Commands</button>
+      <button class="stab" onclick="switchSTab(this,'sc-structure')">Structure</button>
+    </div>
+
+    <div id="sc-code" class="sp active">
+      <div class="code-section">
+        <div class="code-hdr"><span class="code-lang">transcript</span><button class="copy-btn" onclick="copyText()">Copy</button></div>
+        <pre class="code-block" id="codeBlock"></pre>
+      </div>
+    </div>
+
+    <div id="sc-commands" class="sp">
+      <div class="note-block">
+        <h4 class="nb-title">Terminal Commands</h4>
+        <div class="cmd-list" id="cmdList"></div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-dot">💡</div>
+        <p>Run these commands in order to set up the project quickly.</p>
+      </div>
+    </div>
+
+    <div id="sc-structure" class="sp">
+      <div class="note-block">
+        <h4 class="nb-title">Project Structure</h4>
+        <div class="tree" id="treeView"></div>
+      </div>
+      <button class="outline-btn" onclick="copyText()">Copy Structure</button>
+    </div>
+  </div>
+
+  <!-- Panel: Export -->
+  <div id="rp-export" class="res-panel">
+    <div class="export-preview">
+      <div class="exp-card">
+        <div class="exp-card-top">
+          <div class="exp-mini-brand"><span class="by">You</span><span class="bl">Learn</span></div>
+          <h4 id="expTitle">Video Transcript</h4>
+          <p class="exp-body" id="expBody"></p>
+          <div class="exp-line"></div>
+          <p class="exp-muted">Timestamps • Concepts • Steps</p>
+        </div>
+      </div>
+    </div>
+    <div class="export-actions">
+      <button class="exp-btn" onclick="copyText()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Share
+      </button>
+      <button class="exp-btn exp-red" onclick="downloadText()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+  SCREEN: SEARCH
+════════════════════════════════════ -->
+<div id="scr-search" class="scr has-nav">
+  <div class="app-bar"><span class="bar-title">Search</span></div>
+  <div class="scr-scroll">
+    <div class="search-bar-row">
+      <div class="search-bar-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Search analyzed videos..." class="sbar-input"/>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="sec-head"><span class="sec-title">Recent Searches</span></div>
+      <div class="card-list">
+        <div class="search-row-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>React Native tutorial</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="search-row-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Python Django REST API</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="search-row-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>UI/UX Figma design</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="sec-head"><span class="sec-title">Trending Topics</span></div>
+      <div class="chip-wrap">
+        <div class="topic-chip">🔥 React Native</div>
+        <div class="topic-chip">⚡ Next.js 15</div>
+        <div class="topic-chip">🐍 Python AI</div>
+        <div class="topic-chip">🎨 Figma</div>
+        <div class="topic-chip">☁️ AWS</div>
+        <div class="topic-chip">🦀 Rust</div>
+        <div class="topic-chip">🐳 Docker</div>
+        <div class="topic-chip">📱 Flutter</div>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="sec-head"><span class="sec-title">Popular Tutorials</span></div>
+      <div class="card-list">
+        <div class="vid-row">
+          <div class="vid-thumb t-blue"><span>RN</span></div>
+          <div class="vid-meta"><p class="vt">React Native Full Course 2024</p><p class="vs">Traversy Media · 4.2h</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="vid-row">
+          <div class="vid-thumb t-green"><span>ML</span></div>
+          <div class="vid-meta"><p class="vt">Machine Learning A-Z</p><p class="vs">Kaggle · 2h</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="vid-row">
+          <div class="vid-thumb t-orange"><span>TS</span></div>
+          <div class="vid-meta"><p class="vt">TypeScript Masterclass</p><p class="vs">Jack Herrington · 3.5h</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+  SCREEN: LIBRARY
+════════════════════════════════════ -->
+<div id="scr-library" class="scr has-nav">
+  <div class="app-bar"><span class="bar-title">My Library</span></div>
+  <div class="scr-scroll">
+    <div class="lib-tabs">
+      <button class="ltab active" onclick="switchLibTab(this,'lt-analyses')">Analyses</button>
+      <button class="ltab" onclick="switchLibTab(this,'lt-bookmarks')">Bookmarks</button>
+      <button class="ltab" onclick="switchLibTab(this,'lt-downloads')">Downloads</button>
+    </div>
+
+    <div id="lt-analyses" class="lt-panel active">
+      <div class="card-list">
+        <div class="lib-card">
+          <div class="vid-thumb dark-thumb"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white" opacity="0.8"/></svg></div>
+          <div class="vid-meta">
+            <p class="vt">React Native Full Course</p>
+            <p class="vs">Traversy Media</p>
+            <div class="prog-row"><div class="prog-track"><div class="prog-fill" style="width:48%"></div></div><span class="prog-pct">48%</span></div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div class="lib-card">
+          <div class="vid-thumb t-blue"><span>PY</span></div>
+          <div class="vid-meta">
+            <p class="vt">Python Django Full Course</p>
+            <p class="vs">CodeWithHarry</p>
+            <span class="done-badge">Completed</span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div class="lib-card">
+          <div class="vid-thumb t-purple"><span>UX</span></div>
+          <div class="vid-meta">
+            <p class="vt">UI/UX Design Masterclass</p>
+            <p class="vs">DesignCourse</p>
+            <span class="done-badge">Completed</span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div class="lib-card">
+          <div class="vid-thumb t-green"><span>JS</span></div>
+          <div class="vid-meta">
+            <p class="vt">JavaScript Full Course</p>
+            <p class="vs">freeCodeCamp</p>
+            <div class="prog-row"><div class="prog-track"><div class="prog-fill" style="width:12%"></div></div><span class="prog-pct">12%</span></div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div class="lib-card">
+          <div class="vid-thumb t-teal"><span>ML</span></div>
+          <div class="vid-meta">
+            <p class="vt">Machine Learning A-Z</p>
+            <p class="vs">Kaggle · Jose Portilla</p>
+            <div class="prog-row"><div class="prog-track"><div class="prog-fill" style="width:20%"></div></div><span class="prog-pct">20%</span></div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div id="lt-bookmarks" class="lt-panel">
+      <div class="empty-state">
+        <div class="es-icon">🔖</div>
+        <h4>No Bookmarks Yet</h4>
+        <p>Bookmark segments from your analyses to find them quickly later.</p>
+      </div>
+    </div>
+
+    <div id="lt-downloads" class="lt-panel">
+      <div class="empty-state">
+        <div class="es-icon">⬇️</div>
+        <h4>No Downloads Yet</h4>
+        <p>Download transcripts to read them offline anytime.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+  SCREEN: PROFILE
+════════════════════════════════════ -->
+<div id="scr-profile" class="scr has-nav">
+  <div class="app-bar">
+    <span class="bar-title">Profile</span>
+    <button class="icon-circle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+  </div>
+  <div class="scr-scroll">
+    <!-- User card -->
+    <div class="profile-hero">
+      <div class="avatar-ring">
+        <div class="avatar-inner">AK</div>
+      </div>
+      <h3 class="profile-name">Ahmed Khan</h3>
+      <p class="profile-email">ahmed@example.com</p>
+      <div class="pro-badge">⚡ Premium</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box"><span class="sb-val">24</span><span class="sb-lbl">Analyzed</span></div>
+      <div class="stat-box"><span class="sb-val">156</span><span class="sb-lbl">Hours Saved</span></div>
+      <div class="stat-box"><span class="sb-val">🔥 12</span><span class="sb-lbl">Day Streak</span></div>
+    </div>
+
+    <!-- Settings list -->
+    <div class="settings-list">
+      <div class="settings-item">
+        <div class="si-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account Settings</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Subscription</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Exported Files</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Downloads</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Help &amp; Support</span></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><span>Dark Mode</span></div>
+        <div class="toggle-switch" id="darkToggle" onclick="toggleDarkMode()"><div class="toggle-knob"></div></div>
+      </div>
+    </div>
+
+    <button class="logout-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+  BOTTOM NAV
+════════════════════════════════════ -->
+<nav id="bottomNav" class="bottom-nav" style="display:none">
+  <button class="bn-item" id="bn-home" onclick="tabNav('scr-home','bn-home')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="bn-item" id="bn-search" onclick="tabNav('scr-search','bn-search')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span>Search</span>
+  </button>
+  <button class="bn-add" onclick="tabNav('scr-home','bn-home'); document.getElementById('urlInput').focus()">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+  <button class="bn-item" id="bn-library" onclick="tabNav('scr-library','bn-library')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>Library</span>
+  </button>
+  <button class="bn-item" id="bn-profile" onclick="tabNav('scr-profile','bn-profile')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </button>
+</nav>
+
+</div><!-- /#app -->
+
 <div id="toast" class="toast" style="display:none"></div>
-
 <script src="/static/js/app.js"></script>
 </body>
 </html>
