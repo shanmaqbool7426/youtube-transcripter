@@ -1,147 +1,156 @@
-// ─── STATE ──────────────────────────────────────────────
+// ─── STATE ──────────────────────────────────
 let currentData = null;
-let activeTab = 'timeline';
-let procInterval = null;
+let procTimer = null;
 
-// ─── UTILS ──────────────────────────────────────────────
-function formatTime(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+// ─── UTILS ──────────────────────────────────
+function fmt(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = Math.floor(sec % 60);
+    if (h > 0) return `${h}:${pad(m)}:${pad(s)}`;
+    return `${pad(m)}:${pad(s)}`;
+}
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function fmtDur(s) {
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+    if (h) return `${h}h ${m}m`;
+    if (m) return `${m}m`;
+    return `${Math.floor(s)}s`;
 }
 
-function formatDuration(totalSeconds) {
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = Math.floor(totalSeconds % 60);
-    if (h > 0) return `${h}h ${m}m`;
-    if (m > 0) return `${m}m ${s}s`;
-    return `${s}s`;
-}
-
-function escapeHtml(str) {
-    return str
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;');
+function esc(str) {
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.style.display = 'block';
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => { t.style.display = 'none'; }, 2400);
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.style.display = 'none', 2200);
 }
 
+// ─── NAV ────────────────────────────────────
+function goToHome() {
+    document.getElementById('splashScreen').style.animation = 'fadeIn 0.3s reverse both';
+    setTimeout(() => {
+        document.getElementById('splashScreen').style.display = 'none';
+        document.getElementById('appShell').style.display = 'flex';
+        document.getElementById('appShell').style.flexDirection = 'column';
+        showScreen('homeScreen');
+    }, 280);
+}
+
+function showScreen(id) {
+    ['homeScreen','processingScreen','resultsScreen'].forEach(s => {
+        document.getElementById(s).style.display = 'none';
+    });
+    document.getElementById(id).style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showHome() {
+    showScreen('homeScreen');
+    document.querySelectorAll('.bnav-item').forEach((b,i) => b.classList.toggle('active', i === 0));
+}
+
+function resetApp() {
+    currentData = null;
+    document.getElementById('urlInput').value = '';
+    hideError();
+    showHome();
+}
+
+// ─── ERRORS ─────────────────────────────────
 function showError(msg) {
     const box = document.getElementById('errorBox');
     document.getElementById('errorMsg').textContent = msg;
     box.style.display = 'flex';
 }
-
 function hideError() {
     document.getElementById('errorBox').style.display = 'none';
 }
 
-// ─── SECTIONS ───────────────────────────────────────────
-function showSection(id) {
-    ['heroSection','processingSection','resultSection'].forEach(s => {
-        const el = document.getElementById(s);
-        if (el) el.style.display = 'none';
-    });
-    const target = document.getElementById(id);
-    if (target) target.style.display = (id === 'heroSection') ? 'flex' : (id === 'resultSection' ? 'flex' : 'flex');
-    // override per element
-    if (id === 'heroSection') target.style.display = '';
-    if (id === 'processingSection') target.style.display = 'flex';
-    if (id === 'resultSection') target.style.display = 'flex';
-}
-
-// ─── PROCESSING ANIMATION ───────────────────────────────
+// ─── PROCESSING ANIMATION ───────────────────
 const STEPS = [
-    { id: 'step1', label: 'Fetching transcript data',          pct: 25 },
-    { id: 'step2', label: 'Parsing segments & timestamps',     pct: 55 },
-    { id: 'step3', label: 'Building smart timeline',           pct: 80 },
-    { id: 'step4', label: 'Generating summary',                pct: 100 },
+    { id: 'pci1', pct: 18 },
+    { id: 'pci2', pct: 36 },
+    { id: 'pci3', pct: 54 },
+    { id: 'pci4', pct: 72 },
+    { id: 'pci5', pct: 88 },
+    { id: 'pci6', pct: 100 },
 ];
 
-function setRingProgress(pct) {
-    const bar = document.querySelector('.proc-bar');
-    if (!bar) return;
-    const circ = 2 * Math.PI * 50;
-    bar.style.strokeDashoffset = circ - (circ * pct / 100);
+function setProgress(pct) {
+    const circ = 2 * Math.PI * 68; // 427
+    const bar = document.querySelector('.proc-progress');
+    if (bar) bar.style.strokeDashoffset = circ * (1 - pct / 100);
+    const pctEl = document.getElementById('procPct');
+    if (pctEl) pctEl.textContent = Math.round(pct) + '%';
 }
 
-function animateStep(index) {
-    // mark previous as done
-    if (index > 0) {
-        const prev = document.getElementById(STEPS[index-1].id);
-        prev.classList.remove('active');
-        prev.classList.add('done');
-        prev.querySelector('.step-check').style.display = 'block';
+function setStepState(el, state) {
+    el.classList.remove('active','done');
+    const icon = el.querySelector('.pci-icon');
+    icon.classList.remove('active-icon','done-icon');
+    if (state === 'active') {
+        el.classList.add('active');
+        icon.classList.add('active-icon');
+    } else if (state === 'done') {
+        el.classList.add('done');
+        icon.classList.add('done-icon');
     }
-    if (index >= STEPS.length) return;
-    const step = STEPS[index];
-    const el = document.getElementById(step.id);
-    el.classList.add('active');
-    document.getElementById('procStatus').textContent = step.label + '...';
-    setRingProgress(step.pct);
+}
+
+function resetProcessing() {
+    setProgress(0);
+    STEPS.forEach(s => {
+        const el = document.getElementById(s.id);
+        if (el) setStepState(el, 'pending');
+    });
 }
 
 function startProcessingAnimation() {
-    // Reset steps
-    STEPS.forEach(s => {
-        const el = document.getElementById(s.id);
-        el.classList.remove('active','done');
-        el.querySelector('.step-check').style.display = 'none';
-    });
-    setRingProgress(0);
-    document.getElementById('procStatus').textContent = 'Connecting to YouTube...';
-
+    resetProcessing();
     let i = 0;
-    animateStep(i);
-    procInterval = setInterval(() => {
-        i++;
-        if (i >= STEPS.length) { clearInterval(procInterval); return; }
-        animateStep(i);
-    }, 700);
+    setStepState(document.getElementById(STEPS[0].id), 'active');
+    procTimer = setInterval(() => {
+        if (i < STEPS.length) {
+            setStepState(document.getElementById(STEPS[i].id), 'done');
+            i++;
+            if (i < STEPS.length) {
+                setStepState(document.getElementById(STEPS[i].id), 'active');
+                setProgress(STEPS[i].pct);
+            }
+        } else {
+            clearInterval(procTimer);
+        }
+    }, 650);
 }
 
 function stopProcessingAnimation() {
-    clearInterval(procInterval);
-    // mark all done
-    STEPS.forEach(s => {
-        const el = document.getElementById(s.id);
-        el.classList.remove('active');
-        el.classList.add('done');
-        el.querySelector('.step-check').style.display = 'block';
-    });
-    setRingProgress(100);
-    document.getElementById('procStatus').textContent = 'Complete!';
+    clearInterval(procTimer);
+    STEPS.forEach(s => setStepState(document.getElementById(s.id), 'done'));
+    setProgress(100);
 }
 
-// ─── FETCH ──────────────────────────────────────────────
+// ─── FETCH ──────────────────────────────────
 async function fetchTranscript() {
     const url = document.getElementById('urlInput').value.trim();
-    if (!url) {
-        showError('Please enter a YouTube URL or video ID.');
-        return;
-    }
+    if (!url) { showError('Please enter a YouTube URL or video ID.'); return; }
     hideError();
 
-    // Switch to processing
-    showSection('processingSection');
-    startProcessingAnimation();
-
-    // Disable button
+    // UI: loading
     const btn = document.getElementById('analyzeBtn');
     btn.disabled = true;
-    btn.querySelector('.analyze-btn-text').style.display = 'none';
-    btn.querySelector('.analyze-btn-loading').style.display = 'flex';
+    document.getElementById('analyzeBtnText').style.display = 'none';
+    document.getElementById('analyzeBtnSpinner').style.display = 'flex';
+
+    showScreen('processingScreen');
+    startProcessingAnimation();
 
     try {
         const res = await fetch('/api/transcript', {
@@ -153,182 +162,152 @@ async function fetchTranscript() {
 
         if (!res.ok) {
             stopProcessingAnimation();
-            showSection('heroSection');
+            showScreen('homeScreen');
             showError(data.error || 'Something went wrong.');
             return;
         }
 
         currentData = data;
         stopProcessingAnimation();
+        await new Promise(r => setTimeout(r, 500));
+        renderResults(data);
 
-        // Brief pause so user sees 100% complete
-        await new Promise(r => setTimeout(r, 600));
-        renderResult(data);
-
-    } catch (err) {
+    } catch (e) {
         stopProcessingAnimation();
-        showSection('heroSection');
+        showScreen('homeScreen');
         showError('Network error. Please try again.');
     } finally {
         btn.disabled = false;
-        btn.querySelector('.analyze-btn-text').style.display = 'flex';
-        btn.querySelector('.analyze-btn-loading').style.display = 'none';
+        document.getElementById('analyzeBtnText').style.display = 'inline';
+        document.getElementById('analyzeBtnSpinner').style.display = 'none';
     }
 }
 
-// ─── RENDER RESULT ───────────────────────────────────────
-function renderResult(data) {
-    // Stats
-    document.getElementById('statWords').textContent = data.word_count.toLocaleString();
-    document.getElementById('statSegments').textContent = data.segment_count.toLocaleString();
-
-    const lastSeg = data.segments[data.segments.length - 1];
+// ─── RENDER RESULTS ─────────────────────────
+function renderResults(data) {
+    const segs = data.segments;
+    const lastSeg = segs[segs.length - 1];
     const totalSec = lastSeg ? lastSeg.start + lastSeg.duration : 0;
-    document.getElementById('statDuration').textContent = formatDuration(totalSec);
 
-    const langShort = (data.language || 'Unknown').replace('English (manual)', 'EN').replace('English (auto-generated)', 'EN Auto');
-    document.getElementById('statLang').textContent = langShort;
+    // Header stats
+    document.getElementById('resultVideoTitle').textContent =
+        `Video · ${data.language || 'Transcript'}`;
+    document.getElementById('statWords').textContent = data.word_count.toLocaleString();
+    document.getElementById('statSegments').textContent = data.segment_count;
+    document.getElementById('statDuration').textContent = fmtDur(totalSec);
 
     // Full text
     document.getElementById('fullText').textContent = data.full_text;
 
     // Timeline
-    renderTimeline(data.segments);
+    buildTimeline(segs);
 
     // Notes
-    renderNotes(data);
+    buildNotes(data, totalSec);
 
-    // Switch tab to timeline
-    switchTab('timeline');
-    showSection('resultSection');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Switch to results
+    switchMainTab('timeline');
+    showScreen('resultsScreen');
 }
 
-// ─── TIMELINE ────────────────────────────────────────────
-function renderTimeline(segments) {
+// ─── TIMELINE ───────────────────────────────
+function buildTimeline(segs) {
     const list = document.getElementById('timelineList');
     list.innerHTML = '';
-    segments.forEach((seg, i) => {
+    segs.forEach((seg, i) => {
         const card = document.createElement('div');
-        card.className = 'timeline-card';
-        card.style.animationDelay = `${Math.min(i * 18, 400)}ms`;
+        card.className = 'tl-card';
+        card.style.animationDelay = `${Math.min(i * 15, 300)}ms`;
         card.innerHTML = `
-            <span class="tl-num">#${String(i+1).padStart(2,'0')}</span>
-            <span class="tl-time">${formatTime(seg.start)}</span>
-            <span class="tl-text">${escapeHtml(seg.text)}</span>
+            <span class="tl-num">#${pad(i+1)}</span>
+            <span class="tl-time">${fmt(seg.start)}</span>
+            <span class="tl-text">${esc(seg.text)}</span>
         `;
         list.appendChild(card);
     });
 }
 
-// ─── NOTES ───────────────────────────────────────────────
-function renderNotes(data) {
-    const grid = document.getElementById('notesGrid');
-    grid.innerHTML = '';
-
-    // Build key sentences (every Nth segment as "key points")
+// ─── NOTES ──────────────────────────────────
+function buildNotes(data, totalSec) {
     const segs = data.segments;
-    const step = Math.max(1, Math.floor(segs.length / 8));
-    const keyPoints = [];
-    for (let i = 0; i < segs.length; i += step) {
-        if (keyPoints.length >= 8) break;
+
+    // Summary
+    const summaryWords = data.full_text.split(' ');
+    const summary = summaryWords.slice(0, 60).join(' ') + (summaryWords.length > 60 ? '...' : '');
+    document.getElementById('notesSummary').textContent = summary;
+
+    // What You'll Build
+    const closing = segs.slice(-4).map(s => s.text).join(' ');
+    document.getElementById('notesWhatBuild').textContent =
+        closing.slice(0, 160) + (closing.length > 160 ? '...' : '');
+
+    // Key Concepts (from spread of segments)
+    const kc = document.getElementById('notesConceptsList');
+    kc.innerHTML = '';
+    const step = Math.max(1, Math.floor(segs.length / 6));
+    for (let i = 0; i < segs.length && kc.children.length < 6; i += step) {
         const text = segs[i].text.trim();
-        if (text.length > 15) {
-            keyPoints.push({ time: formatTime(segs[i].start), text });
+        if (text.length > 12) {
+            const li = document.createElement('li');
+            li.textContent = text.slice(0, 80);
+            kc.appendChild(li);
         }
     }
 
-    // Overview card
-    const wordCount = data.word_count;
-    const lastSeg = segs[segs.length - 1];
-    const totalSec = lastSeg ? lastSeg.start + lastSeg.duration : 0;
-    grid.appendChild(makeNoteCard({
-        icon: '📋', iconBg: 'rgba(255,0,0,0.1)', iconBorder: 'rgba(255,0,0,0.2)',
-        title: 'Overview',
-        lines: [
-            `${wordCount.toLocaleString()} words across ${data.segment_count} segments`,
-            `Estimated read time: ~${Math.ceil(wordCount / 200)} min`,
-            `Video duration: ${formatDuration(totalSec)}`,
-            `Language: ${data.language || 'Unknown'}`,
-        ]
-    }));
-
-    // Key moments card
-    if (keyPoints.length > 0) {
-        grid.appendChild(makeNoteCard({
-            icon: '⚡', iconBg: 'rgba(59,130,246,0.1)', iconBorder: 'rgba(59,130,246,0.2)',
-            title: 'Key Moments',
-            lines: keyPoints.map(k => `[${k.time}] ${k.text}`)
-        }));
-    }
-
-    // Opening & closing
-    if (segs.length >= 4) {
-        const openLines = segs.slice(0,3).map(s => s.text.trim()).filter(t => t.length > 5);
-        const closeLines = segs.slice(-3).map(s => s.text.trim()).filter(t => t.length > 5);
-        if (openLines.length) {
-            grid.appendChild(makeNoteCard({
-                icon: '🚀', iconBg: 'rgba(34,197,94,0.1)', iconBorder: 'rgba(34,197,94,0.2)',
-                title: 'Opening',
-                lines: openLines
-            }));
-        }
-        if (closeLines.length) {
-            grid.appendChild(makeNoteCard({
-                icon: '🏁', iconBg: 'rgba(168,85,247,0.1)', iconBorder: 'rgba(168,85,247,0.2)',
-                title: 'Closing',
-                lines: closeLines
-            }));
+    // Concepts full list
+    const cf = document.getElementById('conceptsFullList');
+    cf.innerHTML = '';
+    const step2 = Math.max(1, Math.floor(segs.length / 10));
+    for (let i = 0; i < segs.length && cf.children.length < 10; i += step2) {
+        const text = segs[i].text.trim();
+        if (text.length > 8) {
+            const li = document.createElement('li');
+            li.textContent = `[${fmt(segs[i].start)}] ${text.slice(0, 90)}`;
+            cf.appendChild(li);
         }
     }
 
-    // Full summary
-    const summary = data.full_text.split(' ').slice(0, 80).join(' ') + (data.word_count > 80 ? '…' : '');
-    const summaryCard = document.createElement('div');
-    summaryCard.className = 'note-card';
-    summaryCard.innerHTML = `
-        <div class="note-card-header">
-            <div class="note-icon" style="background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.2);">✍️</div>
-            <span class="note-title">Auto Summary</span>
-        </div>
-        <p class="note-body">${escapeHtml(summary)}</p>
-    `;
-    grid.appendChild(summaryCard);
+    // Steps
+    const sl = document.getElementById('stepsList');
+    sl.innerHTML = '';
+    const stepSeg = Math.max(1, Math.floor(segs.length / 8));
+    let stepNum = 1;
+    for (let i = 0; i < segs.length && stepNum <= 8; i += stepSeg) {
+        const text = segs[i].text.trim();
+        if (text.length > 12) {
+            const div = document.createElement('div');
+            div.className = 'step-item';
+            div.innerHTML = `
+                <div class="step-num">${stepNum}</div>
+                <div class="step-text">${esc(text.slice(0, 100))}</div>
+            `;
+            sl.appendChild(div);
+            stepNum++;
+        }
+    }
 }
 
-function makeNoteCard({ icon, iconBg, iconBorder, title, lines }) {
-    const card = document.createElement('div');
-    card.className = 'note-card';
-    const bulletsHtml = lines.map(l =>
-        `<div class="note-bullet"><div class="note-bullet-dot"></div><span>${escapeHtml(l)}</span></div>`
-    ).join('');
-    card.innerHTML = `
-        <div class="note-card-header">
-            <div class="note-icon" style="background:${iconBg};border:1px solid ${iconBorder};">${icon}</div>
-            <span class="note-title">${escapeHtml(title)}</span>
-        </div>
-        <div>${bulletsHtml}</div>
-    `;
-    return card;
+// ─── TABS ───────────────────────────────────
+function switchMainTab(tab) {
+    document.querySelectorAll('.main-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.panel').forEach(p =>
+        p.classList.toggle('active', p.id === `panel-${tab}`));
 }
 
-// ─── TABS ────────────────────────────────────────────────
-function switchTab(tab) {
-    activeTab = tab;
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.tab === tab);
-    });
-    document.querySelectorAll('.tab-panel').forEach(p => {
-        p.classList.toggle('active', p.id === `tab-${tab}`);
-    });
+function switchSubTab(stab) {
+    document.querySelectorAll('.sub-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.stab === stab));
+    document.querySelectorAll('.stab-panel').forEach(p =>
+        p.classList.toggle('active', p.id === `stab-${stab}`));
 }
 
-// ─── COPY / DOWNLOAD ─────────────────────────────────────
+// ─── COPY / DOWNLOAD ────────────────────────
 function copyText() {
     if (!currentData) return;
     navigator.clipboard.writeText(currentData.full_text)
         .then(() => showToast('✓ Copied to clipboard'))
-        .catch(() => showToast('Copy failed — please select manually'));
+        .catch(() => showToast('Copy failed'));
 }
 
 function downloadText() {
@@ -342,16 +321,9 @@ function downloadText() {
     showToast('✓ Download started');
 }
 
-// ─── RESET ───────────────────────────────────────────────
-function resetApp() {
-    currentData = null;
-    document.getElementById('urlInput').value = '';
-    hideError();
-    showSection('heroSection');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ─── KEYBOARD ────────────────────────────────────────────
-document.getElementById('urlInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') fetchTranscript();
+// ─── KEYBOARD ───────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('urlInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') fetchTranscript();
+    });
 });

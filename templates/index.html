@@ -3,260 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VidLearn — AI Transcript Assistant</title>
+    <title>YouLearn — Learn from any video</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-    <!-- ── NAVBAR ──────────────────────────────── -->
-    <nav class="navbar">
-        <div class="nav-inner">
-            <div class="nav-brand">
-                <div class="brand-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#FF0000" opacity="0.15"/>
-                        <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#FF0000"/>
-                    </svg>
-                </div>
-                <span class="brand-name">VidLearn</span>
-                <span class="brand-tag">AI</span>
-            </div>
-            <div class="nav-links">
-                <a href="#" class="nav-link">Features</a>
-                <a href="#" class="nav-link">Pricing</a>
-                <button class="nav-cta">Get Started</button>
+<!-- ═══════════════════════════════════════════
+     1. SPLASH SCREEN
+════════════════════════════════════════════ -->
+<div id="splashScreen" class="splash-screen">
+    <div class="splash-bg-dots"></div>
+    <div class="splash-content">
+        <div class="splash-logo-ring">
+            <div class="splash-logo-inner">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/>
+                </svg>
             </div>
         </div>
-    </nav>
+        <div class="splash-brand">
+            <span class="splash-brand-you">You</span><span class="splash-brand-learn">Learn</span>
+        </div>
+        <p class="splash-tagline">Learn from any video.<br>Implement faster.</p>
+        <button class="splash-btn" onclick="goToHome()">Get Started</button>
+        <button class="splash-skip" onclick="goToHome()">Skip</button>
+    </div>
+</div>
 
-    <!-- ── HERO ───────────────────────────────── -->
-    <section class="hero" id="heroSection">
-        <div class="hero-glow hero-glow-1"></div>
-        <div class="hero-glow hero-glow-2"></div>
+<!-- ═══════════════════════════════════════════
+     2. MAIN APP SHELL
+════════════════════════════════════════════ -->
+<div id="appShell" class="app-shell" style="display:none">
 
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="badge-dot"></span>
-                AI-Powered Learning Assistant
+    <!-- TOP NAV -->
+    <header class="app-header">
+        <div class="app-header-inner">
+            <div class="app-brand">
+                <div class="app-brand-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/>
+                    </svg>
+                </div>
+                <span class="app-brand-text"><span class="brand-you">You</span><span class="brand-learn">Learn</span></span>
+            </div>
+            <div class="app-header-right">
+                <button class="header-icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── HOME SCREEN ──────────────────────── -->
+    <section id="homeScreen" class="screen screen-home">
+        <div class="home-greeting">
+            <h2 class="greeting-text">Hello <span class="greeting-wave">👋</span></h2>
+            <p class="greeting-sub">What do you want to learn today?</p>
+        </div>
+
+        <!-- Search / URL Input -->
+        <div class="search-row">
+            <div class="search-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input
+                    id="urlInput"
+                    type="text"
+                    class="search-input"
+                    placeholder="Paste YouTube URL here..."
+                    autocomplete="off"
+                    spellcheck="false"
+                />
+            </div>
+            <button id="analyzeBtn" class="analyze-btn" onclick="fetchTranscript()">
+                <span id="analyzeBtnText">Analyze</span>
+                <span id="analyzeBtnSpinner" style="display:none">
+                    <svg class="btn-spin" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="80 60"/></svg>
+                </span>
+            </button>
+        </div>
+
+        <!-- Error -->
+        <div id="errorBox" class="error-row" style="display:none">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="errorMsg"></span>
+        </div>
+
+        <!-- Quick Access Tabs -->
+        <div class="quick-tabs">
+            <div class="quick-tab">
+                <div class="quick-tab-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>History</span>
+            </div>
+            <div class="quick-tab">
+                <div class="quick-tab-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span>Saved</span>
+            </div>
+            <div class="quick-tab">
+                <div class="quick-tab-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M9 21V9l3 3 3-3v12"/></svg>
+                </div>
+                <span>Bookmarks</span>
+            </div>
+            <div class="quick-tab">
+                <div class="quick-tab-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <span>Downloads</span>
+            </div>
+        </div>
+
+        <!-- Continue Learning -->
+        <div class="section-block">
+            <div class="section-header">
+                <h3 class="section-title">Continue Learning</h3>
+                <button class="see-all-btn">See all</button>
+            </div>
+            <div class="continue-card">
+                <div class="continue-thumb">
+                    <div class="continue-thumb-bg">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white" opacity="0.8"/></svg>
+                    </div>
+                </div>
+                <div class="continue-info">
+                    <p class="continue-title">React Native Full Course</p>
+                    <p class="continue-source">Traversy Media</p>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" style="width: 48%"></div>
+                        </div>
+                        <span class="progress-pct">48%</span>
+                    </div>
+                </div>
+                <div class="continue-play">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FF0000"/><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Analyses -->
+        <div class="section-block">
+            <div class="section-header">
+                <h3 class="section-title">Recent Analyses</h3>
+                <button class="see-all-btn">See all</button>
+            </div>
+            <div class="video-list">
+                <div class="video-item">
+                    <div class="video-thumb thumb-blue">
+                        <span class="thumb-label">PY</span>
+                    </div>
+                    <div class="video-meta">
+                        <p class="video-title">Python Django Full Course</p>
+                        <p class="video-date">6/22/15 • CodeWithHarry</p>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="video-item">
+                    <div class="video-thumb thumb-purple">
+                        <span class="thumb-label">UX</span>
+                    </div>
+                    <div class="video-meta">
+                        <p class="video-title">UI/UX Design Masterclass</p>
+                        <p class="video-date">8/15/40 • DesignCourse</p>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── PROCESSING SCREEN ─────────────────── -->
+    <section id="processingScreen" class="screen screen-processing" style="display:none">
+        <div class="proc-wrap">
+            <h2 class="proc-title">Processing Video</h2>
+            <p class="proc-subtitle">This may take a few minutes</p>
+
+            <div class="proc-ring-outer">
+                <svg class="proc-svg" viewBox="0 0 160 160">
+                    <circle class="proc-track" cx="80" cy="80" r="68" fill="none" stroke-width="10"/>
+                    <circle class="proc-progress" cx="80" cy="80" r="68" fill="none" stroke-width="10"
+                        stroke-dasharray="427" stroke-dashoffset="427"
+                        stroke-linecap="round" transform="rotate(-90 80 80)"/>
+                </svg>
+                <div class="proc-pct-wrap">
+                    <span class="proc-pct" id="procPct">0%</span>
+                </div>
             </div>
 
-            <h1 class="hero-title">
-                Learn Faster From<br>
-                <span class="gradient-text">Any YouTube Video</span>
-            </h1>
+            <div class="proc-checklist">
+                <div class="proc-check-item" id="pci1">
+                    <div class="pci-icon pending"></div>
+                    <span class="pci-label">Downloading Video</span>
+                    <div class="pci-check">✓</div>
+                </div>
+                <div class="proc-check-item" id="pci2">
+                    <div class="pci-icon pending"></div>
+                    <span class="pci-label">Extracting Audio</span>
+                    <div class="pci-check">✓</div>
+                </div>
+                <div class="proc-check-item" id="pci3">
+                    <div class="pci-icon pending"></div>
+                    <span class="pci-label">Extracting Frames</span>
+                    <div class="pci-check">✓</div>
+                </div>
+                <div class="proc-check-item" id="pci4">
+                    <div class="pci-icon pending"></div>
+                    <span class="pci-label">Transcribing Audio</span>
+                    <div class="pci-check">✓</div>
+                </div>
+                <div class="proc-check-item" id="pci5">
+                    <div class="pci-icon pending"></div>
+                    <span class="pci-label">Reading Screen (OCR)</span>
+                    <div class="pci-check">✓</div>
+                </div>
+                <div class="proc-check-item" id="pci6">
+                    <div class="pci-icon pending"></div>
+                    <span class="pci-label">AI Analysis in Progress</span>
+                    <div class="pci-check">✓</div>
+                </div>
+            </div>
 
-            <p class="hero-subtitle">
-                Paste a URL and instantly get smart notes, timestamped chapters,<br>
-                full transcript, and a copy-ready text export.
-            </p>
+            <div class="proc-notice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FF0000" opacity="0.15"/><path d="M12 8v4m0 4h.01" stroke="#FF0000" stroke-width="2" stroke-linecap="round"/></svg>
+                <span>You will get a notification when analysis is complete.</span>
+            </div>
+        </div>
+    </section>
 
-            <!-- URL INPUT -->
-            <div class="url-card">
-                <div class="url-input-wrap">
-                    <div class="url-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                        </svg>
-                    </div>
-                    <input
-                        type="text"
-                        id="urlInput"
-                        class="url-input"
-                        placeholder="Paste YouTube URL or video ID..."
-                        autocomplete="off"
-                        spellcheck="false"
-                    />
-                    <button id="analyzeBtn" class="analyze-btn" onclick="fetchTranscript()">
-                        <span class="analyze-btn-text">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
-                            Analyze
-                        </span>
-                        <span class="analyze-btn-loading" style="display:none">
-                            <svg class="spin-svg" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="80 60"/></svg>
-                        </span>
+    <!-- ── RESULTS SCREEN ───────────────────── -->
+    <section id="resultsScreen" class="screen screen-results" style="display:none">
+
+        <!-- Video Header -->
+        <div class="result-video-header">
+            <div class="result-video-thumb">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M10 8.5L16 12L10 15.5V8.5Z" fill="white"/></svg>
+            </div>
+            <div class="result-video-info">
+                <p class="result-video-title" id="resultVideoTitle">Video Transcript</p>
+                <div class="result-video-stats">
+                    <span id="statWords">—</span> words &nbsp;·&nbsp;
+                    <span id="statSegments">—</span> segments &nbsp;·&nbsp;
+                    <span id="statDuration">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Tab Bar -->
+        <div class="main-tabs">
+            <button class="main-tab active" data-tab="timeline" onclick="switchMainTab('timeline')">Timeline</button>
+            <button class="main-tab" data-tab="chapters" onclick="switchMainTab('chapters')">Chapters</button>
+        </div>
+
+        <!-- Timeline Panel -->
+        <div id="panel-timeline" class="panel active">
+            <div class="timeline-scroll" id="timelineList"></div>
+        </div>
+
+        <!-- Chapters / Notes Panel -->
+        <div id="panel-chapters" class="panel">
+            <!-- Sub tabs -->
+            <div class="sub-tabs">
+                <button class="sub-tab active" data-stab="notes" onclick="switchSubTab('notes')">Notes</button>
+                <button class="sub-tab" data-stab="steps" onclick="switchSubTab('steps')">Steps</button>
+                <button class="sub-tab" data-stab="concepts" onclick="switchSubTab('concepts')">Concepts</button>
+                <button class="sub-tab" data-stab="tools" onclick="switchSubTab('tools')">Tools</button>
+            </div>
+
+            <div id="stab-notes" class="stab-panel active">
+                <!-- Course Summary -->
+                <div class="notes-section">
+                    <h4 class="notes-h4">Course Summary</h4>
+                    <p class="notes-body" id="notesSummary"></p>
+                </div>
+                <!-- Key Concepts -->
+                <div class="notes-section">
+                    <h4 class="notes-h4">Key Concepts</h4>
+                    <ul class="notes-bullets" id="notesConceptsList"></ul>
+                </div>
+                <!-- What You'll Build -->
+                <div class="notes-section">
+                    <h4 class="notes-h4">What You'll Build</h4>
+                    <p class="notes-body" id="notesWhatBuild"></p>
+                </div>
+                <!-- Actions -->
+                <div class="notes-actions">
+                    <button class="notes-action-btn" onclick="copyText()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Save
+                    </button>
+                    <button class="notes-action-btn notes-action-red" onclick="downloadText()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export PDF
                     </button>
                 </div>
-                <div class="url-hints">
-                    <span class="url-hint-pill">youtube.com/watch?v=...</span>
-                    <span class="url-hint-pill">youtu.be/...</span>
-                    <span class="url-hint-pill">Video ID</span>
+            </div>
+
+            <div id="stab-steps" class="stab-panel">
+                <div class="notes-section">
+                    <h4 class="notes-h4">Implementation Steps</h4>
+                    <div class="steps-list" id="stepsList"></div>
                 </div>
             </div>
 
-            <!-- FEATURE PILLS -->
-            <div class="feature-strip">
-                <div class="feature-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    Smart Timeline
-                </div>
-                <div class="feature-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    Full Transcript
-                </div>
-                <div class="feature-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    Auto-Summary
-                </div>
-                <div class="feature-pill">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Export .txt
+            <div id="stab-concepts" class="stab-panel">
+                <div class="notes-section">
+                    <h4 class="notes-h4">Key Concepts</h4>
+                    <ul class="notes-bullets" id="conceptsFullList"></ul>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- ── ERROR ──────────────────────────────── -->
-    <div id="errorBox" class="error-card" style="display:none">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span id="errorMsg"></span>
-    </div>
-
-    <!-- ── PROCESSING SCREEN ───────────────────── -->
-    <section id="processingSection" class="processing-section" style="display:none">
-        <div class="processing-card">
-            <div class="proc-ring-wrap">
-                <svg class="proc-ring" viewBox="0 0 120 120">
-                    <circle class="proc-track" cx="60" cy="60" r="50" fill="none" stroke-width="6"/>
-                    <circle class="proc-bar" cx="60" cy="60" r="50" fill="none" stroke-width="6"
-                        stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round"/>
-                </svg>
-                <div class="proc-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="#FF0000" opacity="0.15"/>
-                        <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#FF0000"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="proc-title">Analyzing Video</h3>
-            <p class="proc-subtitle" id="procStatus">Connecting to YouTube...</p>
-            <div class="proc-steps">
-                <div class="proc-step" id="step1">
-                    <div class="step-dot"></div>
-                    <span>Fetching transcript data</span>
-                    <div class="step-check" style="display:none">✓</div>
-                </div>
-                <div class="proc-step" id="step2">
-                    <div class="step-dot"></div>
-                    <span>Parsing segments & timestamps</span>
-                    <div class="step-check" style="display:none">✓</div>
-                </div>
-                <div class="proc-step" id="step3">
-                    <div class="step-dot"></div>
-                    <span>Building smart timeline</span>
-                    <div class="step-check" style="display:none">✓</div>
-                </div>
-                <div class="proc-step" id="step4">
-                    <div class="step-dot"></div>
-                    <span>Generating summary</span>
-                    <div class="step-check" style="display:none">✓</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── RESULTS ────────────────────────────── -->
-    <section id="resultSection" class="result-section" style="display:none">
-
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-icon red">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <div>
-                    <div class="stat-value" id="statWords">—</div>
-                    <div class="stat-label">Words</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon blue">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </div>
-                <div>
-                    <div class="stat-value" id="statSegments">—</div>
-                    <div class="stat-label">Segments</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon green">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <div>
-                    <div class="stat-value" id="statDuration">—</div>
-                    <div class="stat-label">Duration</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon purple">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                </div>
-                <div>
-                    <div class="stat-value" id="statLang">—</div>
-                    <div class="stat-label">Language</div>
+            <div id="stab-tools" class="stab-panel">
+                <div class="notes-section">
+                    <h4 class="notes-h4">Full Transcript</h4>
+                    <p class="fulltext-body" id="fullText"></p>
                 </div>
             </div>
         </div>
 
-        <!-- Tab Bar -->
-        <div class="tab-bar">
-            <button class="tab-btn active" data-tab="timeline" onclick="switchTab('timeline')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Timeline
-            </button>
-            <button class="tab-btn" data-tab="fulltext" onclick="switchTab('fulltext')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Full Text
-            </button>
-            <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                Smart Notes
-            </button>
-            <div class="tab-actions">
-                <button class="icon-btn" onclick="copyText()" title="Copy transcript">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    Copy
-                </button>
-                <button class="icon-btn icon-btn-red" onclick="downloadText()" title="Download .txt">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Download
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab: Timeline -->
-        <div id="tab-timeline" class="tab-panel active">
-            <div class="timeline-list" id="timelineList"></div>
-        </div>
-
-        <!-- Tab: Full Text -->
-        <div id="tab-fulltext" class="tab-panel">
-            <div class="fulltext-card">
-                <p id="fullText" class="fulltext-body"></p>
-            </div>
-        </div>
-
-        <!-- Tab: Smart Notes -->
-        <div id="tab-notes" class="tab-panel">
-            <div class="notes-grid" id="notesGrid"></div>
-        </div>
-
-        <!-- New Analysis -->
-        <div class="new-analysis-bar">
-            <button class="new-analysis-btn" onclick="resetApp()">
+        <!-- Bottom Actions -->
+        <div class="result-bottom-bar">
+            <button class="result-back-btn" onclick="resetApp()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
-                Analyze Another Video
+                New Analysis
+            </button>
+            <button class="result-jump-btn" onclick="downloadText()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download .txt
             </button>
         </div>
     </section>
 
-    <!-- ── TOAST ──────────────────────────────── -->
-    <div id="toast" class="toast" style="display:none"></div>
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <button class="bnav-item active" onclick="showHome()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </button>
+        <button class="bnav-item" onclick="showHome()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </button>
+        <button class="bnav-item bnav-add" onclick="showHome()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="bnav-item" onclick="showHome()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Library</span>
+        </button>
+        <button class="bnav-item" onclick="showHome()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </button>
+    </nav>
 
-    <script src="/static/js/app.js"></script>
+</div><!-- /appShell -->
+
+<!-- TOAST -->
+<div id="toast" class="toast" style="display:none"></div>
+
+<script src="/static/js/app.js"></script>
 </body>
 </html>
