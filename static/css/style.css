@@ -513,11 +513,45 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,BlinkMac
   font-size:.75rem;color:var(--t3);line-height:1.45;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
+.ch-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
+.ch-title{
+  font-size:.9rem;font-weight:700;color:var(--text);flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* WPM number badge */
+.wpm-badge{
+  display:flex;align-items:baseline;gap:1px;
+  font-size:.75rem;font-weight:800;border-radius:7px;
+  padding:3px 7px;white-space:nowrap;flex-shrink:0;line-height:1.2;
+}
+.wpm-unit{font-size:.6rem;font-weight:600;opacity:.75}
+
+/* Meta row (segment count + pace pill) */
+.ch-meta-row{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
 .ch-seg-count{
-  font-size:.65rem;font-weight:600;color:var(--t3);margin-top:4px;
+  font-size:.65rem;font-weight:600;color:var(--t3);
   display:flex;align-items:center;gap:3px;
 }
 .ch-seg-count::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--border2)}
+
+/* Pace pill label */
+.pace-pill{
+  font-size:.62rem;font-weight:700;border-radius:100px;
+  padding:2px 8px;text-transform:uppercase;letter-spacing:.4px;
+}
+
+/* ── Pace colour tokens ─────────────────────── */
+.pace-slow  { background:#DCFCE7; color:#15803D }
+.pace-normal{ background:#DBEAFE; color:#1D4ED8 }
+.pace-fast  { background:#FEF3C7; color:#B45309 }
+.pace-rapid { background:#FFE4E4; color:#CC0000 }
+
+/* WPM badge variants (slightly different shade for the number) */
+.wpm-badge.pace-slow  { background:#BBF7D0; color:#166534 }
+.wpm-badge.pace-normal{ background:#BFDBFE; color:#1E40AF }
+.wpm-badge.pace-fast  { background:#FDE68A; color:#92400E }
+.wpm-badge.pace-rapid { background:#FECACA; color:#991B1B }
 
 /* Chevron */
 .ch-chev{color:var(--border2);flex-shrink:0;transition:color .2s,transform .2s}
