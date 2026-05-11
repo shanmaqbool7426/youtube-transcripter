@@ -286,6 +286,92 @@ function jumpToVideo() {
     showToast(`▶ Opening at ${fmt(selectedSeg.start)}`);
 }
 
+// ─── TIMELINE SEARCH ──────────────────────────────────
+function filterTimeline(query) {
+    const q = query.trim().toLowerCase();
+    const cards  = document.querySelectorAll('#tlList .tl-card');
+    const clearBtn   = document.getElementById('tlClearBtn');
+    const badge      = document.getElementById('tlMatchBadge');
+    const noResults  = document.getElementById('tlNoResults');
+    const jumpBar    = document.getElementById('jumpBar');
+
+    // Show/hide clear button
+    clearBtn.style.display = q ? 'flex' : 'none';
+
+    if (!q) {
+        // Reset: show all, remove highlights
+        cards.forEach(card => {
+            card.classList.remove('tl-hidden');
+            const textEl = card.querySelector('.tl-text');
+            if (textEl) textEl.innerHTML = esc(textEl.dataset.raw || textEl.textContent);
+        });
+        badge.style.display = 'none';
+        noResults.style.display = 'none';
+
+        // Re-trigger badge pop animation on next show
+        badge.style.animation = 'none';
+        return;
+    }
+
+    // Deselect any selected card & hide jump bar while filtering
+    document.querySelectorAll('.tl-card.selected').forEach(c => c.classList.remove('selected'));
+    selectedSeg = null;
+    jumpBar.style.display = 'none';
+
+    let matchCount = 0;
+    cards.forEach(card => {
+        const textEl = card.querySelector('.tl-text');
+        if (!textEl) return;
+
+        // Store original text once
+        if (!textEl.dataset.raw) textEl.dataset.raw = textEl.textContent;
+        const raw = textEl.dataset.raw;
+        const lc  = raw.toLowerCase();
+
+        if (lc.includes(q)) {
+            card.classList.remove('tl-hidden');
+            textEl.innerHTML = highlightMatch(raw, q);
+            matchCount++;
+        } else {
+            card.classList.add('tl-hidden');
+            textEl.innerHTML = esc(raw);
+        }
+    });
+
+    // Show count badge
+    document.getElementById('tlMatchCount').textContent = matchCount;
+    badge.style.animation = 'none';
+    badge.offsetHeight;
+    badge.style.animation = '';
+    badge.style.display = matchCount > 0 ? 'flex' : 'none';
+
+    // Show/hide no-results
+    noResults.style.display = matchCount === 0 ? 'flex' : 'none';
+    document.getElementById('tlNoResultsQuery').textContent = `"${query.trim()}"`;
+
+    // Auto-scroll to first match
+    if (matchCount > 0) {
+        const firstMatch = document.querySelector('#tlList .tl-card:not(.tl-hidden)');
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+}
+
+function highlightMatch(raw, q) {
+    // Escape HTML first, then wrap matches
+    const escaped = esc(raw);
+    const escapedQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return escaped.replace(new RegExp(`(${escapedQ})`, 'gi'), '<mark>$1</mark>');
+}
+
+function clearTlSearch() {
+    const input = document.getElementById('tlSearchInput');
+    input.value = '';
+    filterTimeline('');
+    input.focus();
+}
+
 // ─── NOTES ────────────────────────────────────────────
 function buildNotes(data, dur) {
     const segs = data.segments;

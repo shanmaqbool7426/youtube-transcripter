@@ -285,6 +285,34 @@
 
   <!-- Panel: Timeline -->
   <div id="rp-timeline" class="res-panel active">
+
+    <!-- Live search bar -->
+    <div class="tl-search-row">
+      <div class="tl-search-box" id="tlSearchBox">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          id="tlSearchInput"
+          type="search"
+          placeholder="Search transcript…"
+          autocomplete="off"
+          spellcheck="false"
+          oninput="filterTimeline(this.value)"
+        />
+        <button id="tlClearBtn" class="tl-clear-btn" style="display:none" onclick="clearTlSearch()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="tl-match-badge" id="tlMatchBadge" style="display:none">
+        <span id="tlMatchCount">0</span> found
+      </div>
+    </div>
+
+    <!-- No-results state -->
+    <div id="tlNoResults" class="tl-no-results" style="display:none">
+      <div class="tl-nr-icon">🔍</div>
+      <p>No segments match<br><strong id="tlNoResultsQuery"></strong></p>
+    </div>
+
     <div class="tl-list" id="tlList"></div>
 
     <!-- Floating jump bar — shown when a segment is selected -->

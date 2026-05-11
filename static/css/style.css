@@ -357,6 +357,68 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,BlinkMac
 }
 .tl-text{font-size:.84rem;line-height:1.55;color:var(--text);flex:1}
 
+/* ── Timeline Search ──────────────────────── */
+.tl-search-row{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px 4px;
+  background:var(--bg);
+  flex-shrink:0;
+}
+.tl-search-box{
+  flex:1;display:flex;align-items:center;gap:8px;
+  background:#FFF;border:1.5px solid var(--border2);border-radius:10px;
+  padding:9px 11px;transition:border-color .2s,box-shadow .2s;
+}
+.tl-search-box:focus-within{
+  border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(255,0,0,.08);
+}
+#tlSearchInput{
+  flex:1;border:none;outline:none;background:transparent;
+  font-family:var(--font);font-size:.85rem;color:var(--text);
+  min-width:0;
+}
+#tlSearchInput::placeholder{color:#BBB}
+#tlSearchInput::-webkit-search-cancel-button{display:none}
+.tl-clear-btn{
+  background:none;border:none;cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;width:20px;height:20px;
+  transition:background .15s;
+}
+.tl-clear-btn:hover{background:#F0F0F0}
+.tl-match-badge{
+  background:var(--red);color:#FFF;border-radius:100px;
+  padding:5px 10px;font-size:.72rem;font-weight:700;
+  white-space:nowrap;flex-shrink:0;
+  animation:popIn .2s var(--ease) both;
+}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+
+/* No-results state */
+.tl-no-results{
+  display:flex;flex-direction:column;align-items:center;
+  padding:48px 24px;gap:10px;text-align:center;
+  animation:fadeIn .25s ease;
+}
+.tl-nr-icon{font-size:2rem}
+.tl-no-results p{font-size:.87rem;color:var(--t2);line-height:1.6}
+.tl-no-results strong{color:var(--text)}
+
+/* Highlight matched text */
+.tl-text mark{
+  background:rgba(255,200,0,.35);
+  color:var(--text);
+  border-radius:3px;
+  padding:0 1px;
+  font-weight:700;
+}
+
+/* Hidden card during filter */
+.tl-card.tl-hidden{
+  display:none;
+}
+
 /* ── Jump Bar ─────────────────────────────── */
 .jump-bar{
   position:sticky;bottom:0;left:0;right:0;
