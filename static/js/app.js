@@ -314,6 +314,14 @@ function detectChapters(segs) {
         const sample  = group.slice(0, 4).map(s => s.text).join(' ');
         const preview = group.slice(0, 3).map(s => s.text).join(' ');
 
+        // WPM: total words in group ÷ duration in minutes
+        const wordCount  = group.reduce((acc, s) => acc + s.text.trim().split(/\s+/).length, 0);
+        const lastSeg    = group[group.length - 1];
+        const durSec     = (lastSeg.start + (lastSeg.duration || 5)) - first.start;
+        const durMin     = Math.max(durSec / 60, 0.1);
+        const wpm        = Math.round(wordCount / durMin);
+        const pace       = wpmPace(wpm);
+
         chapters.push({
             index:    chapters.length,
             start:    first.start,
@@ -322,9 +330,18 @@ function detectChapters(segs) {
             preview:  preview.slice(0, 90) + (preview.length > 90 ? '…' : ''),
             segCount: group.length,
             segments: group,
+            wpm,
+            pace,
         });
     }
     return chapters;
+}
+
+function wpmPace(wpm) {
+    if (wpm < 110)  return { label: 'Slow',   cls: 'pace-slow',   tip: 'Easy, introductory pace' };
+    if (wpm < 150)  return { label: 'Normal', cls: 'pace-normal', tip: 'Standard speaking pace' };
+    if (wpm < 190)  return { label: 'Fast',   cls: 'pace-fast',   tip: 'Dense, information-heavy' };
+    return              { label: 'Rapid',  cls: 'pace-rapid',  tip: 'Very fast, take notes!' };
 }
 
 function extractChapterTitle(text) {
@@ -364,9 +381,15 @@ function buildChapters(segs) {
                 <span class="ch-ts">${fmt(ch.start)}</span>
             </div>
             <div class="ch-body">
-                <p class="ch-title">${esc(ch.title)}</p>
+                <div class="ch-title-row">
+                    <p class="ch-title">${esc(ch.title)}</p>
+                    <span class="wpm-badge ${ch.pace.cls}" title="${ch.pace.tip}">${ch.wpm} <span class="wpm-unit">wpm</span></span>
+                </div>
                 <p class="ch-preview">${esc(ch.subtitle)}</p>
-                <p class="ch-seg-count">${ch.segCount} segments</p>
+                <div class="ch-meta-row">
+                    <p class="ch-seg-count">${ch.segCount} segments</p>
+                    <span class="pace-pill ${ch.pace.cls}">${ch.pace.label}</span>
+                </div>
             </div>
             <svg class="ch-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         `;
