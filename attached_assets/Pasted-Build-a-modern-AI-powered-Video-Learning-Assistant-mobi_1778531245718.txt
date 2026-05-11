@@ -1,0 +1,313 @@
+Build a modern AI-powered Video Learning Assistant mobile app frontend using React Native Expo + TypeScript.
+
+IMPORTANT:
+This task is ONLY for frontend UI/UX development using MOCK DATA.
+Do NOT create backend logic yet.
+Do NOT implement APIs yet.
+Use fake/mock JSON data everywhere.
+
+====================================
+APP IDEA
+====================================
+
+The app helps users learn faster from long YouTube/tutorial videos.
+
+Users paste a YouTube video URL and the app converts it into:
+- smart notes
+- implementation steps
+- code snippets
+- chapters
+- project roadmap
+- timestamps
+- PDF-ready learning notes
+
+The app should feel like:
+- YouTube + Notion + Linear + Duolingo
+- futuristic productivity tool
+- premium developer learning platform
+
+====================================
+DESIGN STYLE
+====================================
+
+Use a YouTube-inspired color system:
+- Primary red: #FF0000
+- Dark background: #0F0F0F
+- White cards
+- Soft gray backgrounds
+- Modern minimal UI
+- Rounded corners
+- Beautiful spacing
+- Premium typography
+- Clean shadows
+- Smooth animations
+- Elegant code blocks
+- Responsive layout
+- Glassmorphism where appropriate
+
+Design should feel:
+- modern
+- minimal
+- fast
+- productivity-focused
+- premium
+- developer-friendly
+
+====================================
+TECH STACK
+====================================
+
+Frontend Only:
+- React Native
+- Expo SDK latest
+- TypeScript
+- React Navigation
+- Expo Router
+- React Native Reanimated
+- React Native Gesture Handler
+- Zustand
+- React Native Skia
+- Lottie React Native
+- FlashList
+- React Native SVG
+
+====================================
+IMPORTANT RULES
+====================================
+
+- Use ONLY mock data
+- Create reusable components
+- Use scalable architecture
+- Build production-quality UI
+- Use TypeScript everywhere
+- Create proper folders
+- Add beautiful animations
+- Add loading skeletons
+- Add dark/light mode support
+- Use responsive design
+- Use reusable cards/components
+
+====================================
+SCREENS TO BUILD
+====================================
+
+1. Splash Screen
+- Animated logo
+- YouTube-inspired branding
+- Smooth intro animation
+
+2. Onboarding Screens
+- 3 onboarding slides
+- Explain app benefits
+- Beautiful illustrations
+- Pagination dots
+- CTA buttons
+
+3. Authentication Screens
+- Login
+- Signup
+- Continue as guest
+- Google login button
+- Beautiful modern form UI
+
+4. Home Dashboard
+Features:
+- Paste YouTube URL input
+- Analyze button
+- Continue learning section
+- Recent analyses
+- Popular tutorials
+- AI suggestions cards
+- Progress widgets
+- Bottom navigation
+
+5. Processing Screen
+- Circular progress animation
+- Steps loader:
+  - Downloading video
+  - Extracting audio
+  - Reading screen text
+  - AI analysis
+- Beautiful futuristic loader UI
+
+6. Video Analysis Screen
+Sections:
+- Timeline
+- Chapters
+- Important concepts
+- Project roadmap
+- Smart summary
+- Estimated learning time
+
+7. Smart Timeline Screen
+Timeline cards:
+- timestamp
+- concept
+- short explanation
+- jump button
+
+Example:
+00:15 Setup project
+05:22 Install Firebase
+08:30 Create authentication
+
+8. Notes Screen
+Tabs:
+- Notes
+- Steps
+- Concepts
+- Commands
+
+Include:
+- Beautiful markdown styling
+- Highlight cards
+- Bullet points
+- Save notes button
+- Export PDF button
+
+9. Code Extraction Screen
+- Terminal commands
+- Code snippets
+- Copy buttons
+- Syntax-highlighted code blocks
+- File structure cards
+
+10. Project Structure Screen
+Show:
+- folders
+- components
+- screens
+- navigation
+- services
+- APIs
+
+Beautiful expandable tree UI.
+
+11. Export Screen
+- PDF preview
+- Markdown export
+- Share options
+- Download button
+
+12. Library Screen
+- Saved tutorials
+- Downloaded notes
+- Bookmarked content
+- Search bar
+- Filter tabs
+
+13. Search Screen
+- Search analyzed videos
+- Recent searches
+- Trending topics
+- Category chips
+
+14. Profile Screen
+- User profile
+- Statistics
+- Learning streak
+- Subscription card
+- Settings
+- Dark mode toggle
+
+====================================
+COMPONENTS
+====================================
+
+Create reusable components:
+
+- AppButton
+- GradientCard
+- VideoCard
+- TimelineCard
+- ChapterCard
+- ProgressRing
+- LoadingSkeleton
+- CodeBlock
+- SearchBar
+- BottomTabBar
+- FloatingActionButton
+- SectionHeader
+- AnimatedInput
+- EmptyState
+- GlassCard
+
+====================================
+MOCK DATA
+====================================
+
+Create realistic fake data:
+- tutorial videos
+- timelines
+- code snippets
+- commands
+- learning notes
+- user profile
+- progress stats
+
+Use local JSON files.
+
+====================================
+ANIMATIONS
+====================================
+
+Add:
+- smooth screen transitions
+- fade animations
+- shared element transitions
+- loading shimmer effects
+- button press animations
+- progress animations
+- skeleton loading
+- floating cards
+- swipe gestures
+
+====================================
+FOLDER STRUCTURE
+====================================
+
+Generate scalable folder structure:
+
+src/
+  components/
+  screens/
+  navigation/
+  hooks/
+  constants/
+  theme/
+  animations/
+  mock/
+  store/
+  utils/
+  types/
+  assets/
+
+====================================
+THEME SYSTEM
+====================================
+
+Create:
+- colors.ts
+- typography.ts
+- spacing.ts
+- shadows.ts
+- darkTheme.ts
+- lightTheme.ts
+
+====================================
+DELIVERABLES
+====================================
+
+Generate:
+- complete frontend architecture
+- all screen UI
+- reusable components
+- mock data
+- TypeScript types
+- navigation setup
+- beautiful responsive UI
+- clean scalable code
+- premium animations
+- production-level frontend structure
+
+The app should feel like a premium futuristic learning operating system for developers and students.

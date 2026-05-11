@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Transcripter</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="10" fill="#FF0000"/>
+                    <path d="M30 20L15 29V11L30 20Z" fill="white"/>
+                </svg>
+                <h1>YouTube Transcripter</h1>
+            </div>
+            <p class="subtitle">Extract transcripts from any YouTube video instantly</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="urlInput"
+                        placeholder="Paste a YouTube URL or video ID..."
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button id="fetchBtn" onclick="fetchTranscript()">
+                        <span class="btn-text">Get Transcript</span>
+                        <span class="btn-spinner" style="display:none">
+                            <svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+                        </span>
+                    </button>
+                </div>
+                <p class="hint">Supports youtube.com/watch?v=..., youtu.be/..., and raw video IDs</p>
+            </div>
+
+            <div id="errorBox" class="error-box" style="display:none"></div>
+
+            <div id="resultSection" class="result-section" style="display:none">
+                <div class="result-header">
+                    <div class="result-meta">
+                        <span id="metaLanguage" class="badge"></span>
+                        <span id="metaWords" class="badge badge-secondary"></span>
+                        <span id="metaSegments" class="badge badge-secondary"></span>
+                    </div>
+                    <div class="result-actions">
+                        <button class="action-btn" id="viewToggleBtn" onclick="toggleView()">Show Segments</button>
+                        <button class="action-btn" onclick="copyText()">Copy Text</button>
+                        <button class="action-btn action-btn-primary" onclick="downloadText()">Download .txt</button>
+                    </div>
+                </div>
+
+                <div id="fullTextView" class="transcript-box">
+                    <p id="fullText"></p>
+                </div>
+
+                <div id="segmentsView" class="segments-view" style="display:none">
+                    <div id="segmentsList"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by YouTube Transcript API &mdash; No login required</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast" style="display:none"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
